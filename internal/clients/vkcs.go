@@ -63,10 +63,16 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		}
 
 		// Set credentials in Terraform provider configuration.
-		/*ps.Configuration = map[string]any{
-			"username": creds["username"],
-			"password": creds["password"],
-		}*/
+		ps.Configuration = map[string]any{
+			"auth_url":                     creds["auth_url"],
+			"region":                       creds["region"],
+			"project_id":                   creds["project_id"],
+			"user_domain_id":               creds["user_domain_id"],
+			"user_domain_name":             creds["user_domain_name"],
+			"username":                     creds["username"],
+			"password":                     creds["password"],
+			"cloud_containers_api_version": creds["cloud_containers_api_version"],
+		}
 		return ps, nil
 	}
 }
