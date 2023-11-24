@@ -1,0 +1,30 @@
+apiVersion: publicdns.crossplane.io/v1alpha1
+kind: Zone
+metadata:
+  annotations:
+    meta.upbound.io/example-id: publicdns/v1alpha1/zone
+  labels:
+    testing.upbound.io/example-name: zone
+  name: viletay-store
+spec:
+  forProvider:
+    adminEmail: k.balashov@vk.team
+    expire: 3600000
+    ttl: 120
+    primaryDns: ns1.mcs.mail.ru
+    zone: viletay.store
+
+---
+apiVersion: publicdns.crossplane.io/v1alpha1
+kind: Zone
+metadata:
+  annotations:
+    meta.upbound.io/example-id: publicdns/v1alpha1/zone
+  labels:
+    testing.upbound.io/example-name: zone
+  name: rnd-viletay-store
+spec:
+  forProvider:
+    adminEmail: k.balashov@vk.team
+    expire: 3500000
+    zone: rnd.viletay.store
