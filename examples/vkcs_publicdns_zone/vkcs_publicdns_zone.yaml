@@ -28,3 +28,22 @@ spec:
     adminEmail: viletay
     expire: 3500000
     zone: rnd.viletay.store
+
+#---
+#apiVersion: publicdns.crossplane.io/v1alpha1
+#kind: Record
+#metadata:
+#  annotations:
+#    meta.upbound.io/example-id: publicdns/v1alpha1/record
+#  labels:
+#    testing.upbound.io/example-name: record
+#  name: a-record-vault-rnd-viletay-store
+#spec:
+#  forProvider:
+#    type: A
+#    name: vault
+#    ip: 100.70.136.136
+#    ttl: 60
+#    zoneIdSelector:
+#      matchLabels:
+#        testing.upbound.io/example-name: zone

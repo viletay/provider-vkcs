@@ -1,0 +1,21 @@
+apiVersion: publicdns.crossplane.io/v1alpha1
+kind: Record
+metadata:
+  annotations:
+    meta.upbound.io/example-id: publicdns/v1alpha1/record
+  labels:
+    testing.upbound.io/example-name: srv
+  name: srv
+spec:
+  forProvider:
+    host: siptarget.com
+    port: 5060
+    priority: 10
+    proto: _udp
+    service: _sip
+    ttl: 60
+    type: SRV
+    weight: 5
+    zoneIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: zone

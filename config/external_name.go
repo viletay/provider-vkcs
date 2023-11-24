@@ -10,7 +10,8 @@ import "github.com/crossplane/upjet/pkg/config"
 // provider.
 var ExternalNameConfigs = map[string]config.ExternalName{
 	// Import requires using a randomly generated ID from provider: nl-2e21sda
-	"vkcs_publicdns_zone": config.IdentifierFromProvider,
+	"vkcs_publicdns_zone":   config.IdentifierFromProvider,
+	"vkcs_publicdns_record": config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

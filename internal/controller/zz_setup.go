@@ -10,6 +10,7 @@ import (
 	"github.com/crossplane/upjet/pkg/controller"
 
 	providerconfig "github.com/viletay/provider-vkcs/internal/controller/providerconfig"
+	record "github.com/viletay/provider-vkcs/internal/controller/publicdns/record"
 	zone "github.com/viletay/provider-vkcs/internal/controller/publicdns/zone"
 )
 
@@ -18,6 +19,7 @@ import (
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		providerconfig.Setup,
+		record.Setup,
 		zone.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
