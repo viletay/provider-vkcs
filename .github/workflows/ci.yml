@@ -312,7 +312,4 @@ jobs:
           path: _output/**
 
       - name: Publish Artifacts
-        run: up login && make publish BRANCH_NAME=${GITHUB_REF##*/}
-        env:
-          UP_USER: ${{ secrets.UP_USER }}
-          UP_PASSWORD: ${{ secrets.UP_PASSWORD }}
+        run: make publish BRANCH_NAME=${GITHUB_REF##*/}
