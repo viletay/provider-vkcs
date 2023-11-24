@@ -311,5 +311,11 @@ jobs:
           name: output
           path: _output/**
 
+      - name: Upbound login
+        run: make upbound-login
+        env:
+          UP_USER: ${{ secrets.UP_USER }}
+          UP_PASSWORD: ${{ secrets.UP_PASSWORD }}
+
       - name: Publish Artifacts
         run: make publish BRANCH_NAME=${GITHUB_REF##*/}

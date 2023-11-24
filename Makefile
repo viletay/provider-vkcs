@@ -66,10 +66,10 @@ IMAGES = $(PROJECT_NAME)
 # ====================================================================================
 # Setup XPKG
 
-XPKG_REG_ORGS ?= xpkg.upbound.io/viletay-org
+XPKG_REG_ORGS ?= xpkg.upbound.io/viletay
 # NOTE(hasheddan): skip promoting on xpkg.upbound.io as channel tags are
 # inferred.
-XPKG_REG_ORGS_NO_PROMOTE ?= xpkg.upbound.io/viletay-org
+XPKG_REG_ORGS_NO_PROMOTE ?= xpkg.upbound.io/viletay
 XPKGS = $(PROJECT_NAME)
 -include build/makelib/xpkg.mk
 
@@ -192,6 +192,9 @@ local-deploy: build controlplane.up local.xpkg.deploy.provider.$(PROJECT_NAME)
 	@$(KUBECTL) wait provider.pkg $(PROJECT_NAME) --for condition=Healthy --timeout 5m
 	@$(KUBECTL) -n upbound-system wait --for=condition=Available deployment --all --timeout=5m
 	@$(OK) running locally built provider
+
+upbound-login:
+	@$(UP) login
 
 e2e: local-deploy uptest
 
