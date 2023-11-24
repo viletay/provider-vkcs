@@ -10,9 +10,9 @@ export HASHICORP_RELEASES_URL ?= https://releases.hashicorp.com
 export TERRAFORM_PROVIDER_SOURCE ?= vk-cs/vkcs
 export TERRAFORM_PROVIDER_REPO ?= https://github.com/vk-cs/terraform-provider-vkcs
 export TERRAFORM_PROVIDER_VERSION ?= 0.5.2
-export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-vkcs_0.5.2
-export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= $(TERRAFORM_PROVIDER_REPO)/releases/download/v$(TERRAFORM_PROVIDER_VERSION)/$(TERRAFORM_PROVIDER_DOWNLOAD_NAME)
-export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-vkcs_0.5.2
+export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-vkcs
+export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= $(TERRAFORM_PROVIDER_REPO)/releases/download/v$(TERRAFORM_PROVIDER_VERSION)
+export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-vkcs
 export TERRAFORM_DOCS_PATH ?= docs/resources
 
 PLATFORMS ?= linux_amd64 linux_arm64
@@ -116,7 +116,6 @@ $(TERRAFORM_PROVIDER_SCHEMA): $(TERRAFORM)
 	@echo '{"terraform":[{"required_providers":[{"provider":{"source":"'"$(TERRAFORM_PROVIDER_SOURCE)"'","version":"'"$(TERRAFORM_PROVIDER_VERSION)"'"}}],"required_version":"'"$(TERRAFORM_VERSION)"'"}]}' > $(TERRAFORM_WORKDIR)/main.tf.json
 	@$(TERRAFORM) -chdir=$(TERRAFORM_WORKDIR) init > $(TERRAFORM_WORKDIR)/terraform-logs.txt 2>&1
 	@$(TERRAFORM) -chdir=$(TERRAFORM_WORKDIR) providers schema -json=true > $(TERRAFORM_PROVIDER_SCHEMA) 2>> $(TERRAFORM_WORKDIR)/terraform-logs.txt
-	@echo
 	@$(OK) generating provider schema for $(TERRAFORM_PROVIDER_SOURCE) $(TERRAFORM_PROVIDER_VERSION)
 
 pull-docs:
