@@ -2515,6 +2515,43 @@ resources:
             type: required string →  The type of persistence mode. The current specification supports SOURCE_IP, HTTP_COOKIE, and APP_COOKIE.
         importStatements:
             - terraform import vkcs_lb_pool.pool_1 60ad9ee4-249a-4d60-a45b-aa60e046c513
+    vkcs_networking_floatingip:
+        subCategory: Network
+        description: Manages a floating IP resource within VKCS.
+        name: vkcs_networking_floatingip
+        title: vkcs_networking_floatingip
+        examples:
+            - name: floatip_1
+              manifest: |-
+                {
+                  "pool": "public"
+                }
+            - name: floatip_1
+              manifest: |-
+                {
+                  "pool": "${data.vkcs_networking_network.ext_network.name}",
+                  "subnet_ids": [
+                    "\u003csubnet1_id\u003e",
+                    "\u003csubnet2_id\u003e",
+                    "\u003csubnet3_id\u003e"
+                  ]
+                }
+              references:
+                pool: data.vkcs_networking_network.ext_network.name
+        argumentDocs:
+            address: optional string →  The actual floating IP address itself.
+            description: optional string →  Human-readable description for the floating IP.
+            fixed_ip: optional string →  Fixed IP of the port to associate with this floating IP. Required if the port has multiple fixed IPs.
+            id: string →  ID of the resource.
+            pool: required string →  The name of the pool from which to obtain the floating IP. Changing this creates a new floating IP.
+            port_id: optional string →  ID of an existing port with at least one IP address to associate with this floating IP.
+            region: optional string →  The region in which to obtain the Networking client. A Networking client is needed to create a floating IP that can be used with another networking resource, such as a load balancer. If omitted, the region argument of the provider is used. Changing this creates a new floating IP (which may or may not have a different address).
+            sdn: 'optional string →  SDN to use for this resource. Must be one of following: "neutron", "sprut". Default value is project''s default SDN.'
+            subnet_id: optional string →  The subnet ID of the floating IP pool. Specify this if the floating IP network has multiple subnets.
+            subnet_ids: optional string →  A list of external subnet IDs to try over each to allocate a floating IP address. If a subnet ID in a list has exhausted floating IP pool, the next subnet ID will be tried. This argument is used only during the resource creation. Conflicts with a subnet_id argument.
+            value_specs: optional map of string →  Map of additional options.
+        importStatements:
+            - terraform import vkcs_networking_floatingip.floatip_1 2c7f39f3-702b-48d1-940c-b50384177ee1
     vkcs_networking_floatingip_associate:
         subCategory: Network
         description: Associates a Floating IP to a Port

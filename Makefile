@@ -6,11 +6,12 @@ PROJECT_REPO ?= github.com/viletay/$(PROJECT_NAME)
 
 export TERRAFORM_VERSION ?= 1.6.4
 
+export HASHICORP_RELEASES_URL ?= https://releases.hashicorp.com
 export TERRAFORM_PROVIDER_SOURCE ?= vk-cs/vkcs
 export TERRAFORM_PROVIDER_REPO ?= https://github.com/vk-cs/terraform-provider-vkcs
 export TERRAFORM_PROVIDER_VERSION ?= 0.5.2
 export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-vkcs
-export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= https://hashicorp-releases.mcs.mail.ru/$(TERRAFORM_PROVIDER_DOWNLOAD_NAME)/$(TERRAFORM_PROVIDER_VERSION)
+export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= $(HASHICORP_RELEASES_URL)/$(TERRAFORM_PROVIDER_DOWNLOAD_NAME)/$(TERRAFORM_PROVIDER_VERSION)
 export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-vkcs_v0.5.2
 export TERRAFORM_DOCS_PATH ?= docs/resources
 
@@ -104,7 +105,7 @@ TERRAFORM_PROVIDER_SCHEMA := config/schema.json
 $(TERRAFORM):
 	@$(INFO) installing terraform $(HOSTOS)-$(HOSTARCH)
 	@mkdir -p $(TOOLS_HOST_DIR)/tmp-terraform
-	@curl -fsSL https://hashicorp-releases.mcs.mail.ru/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_$(SAFEHOST_PLATFORM).zip -o $(TOOLS_HOST_DIR)/tmp-terraform/terraform.zip
+	@curl -fsSL $(HASHICORP_RELEASES_URL)/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_$(SAFEHOST_PLATFORM).zip -o $(TOOLS_HOST_DIR)/tmp-terraform/terraform.zip
 	@unzip $(TOOLS_HOST_DIR)/tmp-terraform/terraform.zip -d $(TOOLS_HOST_DIR)/tmp-terraform
 	@mv $(TOOLS_HOST_DIR)/tmp-terraform/terraform $(TERRAFORM)
 	@rm -fr $(TOOLS_HOST_DIR)/tmp-terraform
@@ -124,7 +125,9 @@ pull-docs:
 		git clone -c advice.detachedHead=false --depth 1 --filter=blob:none --branch "v$(TERRAFORM_PROVIDER_VERSION)" --sparse "$(TERRAFORM_PROVIDER_REPO)" "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)"; \
 	fi
 	@git -C "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" sparse-checkout set "$(TERRAFORM_DOCS_PATH)"
-
+	# Provider documentation fix 0.5.2
+	@echo "Fix: $(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)/$(TERRAFORM_DOCS_PATH)/networking_floatingip.md"
+	@sed -i 's/subnet_ids = \[<subnet1_id>, <subnet2_id>, <subnet3_id>\]/subnet_ids = \["<subnet1_id>", "<subnet2_id>", "<subnet3_id>"\]/g' .work/vk-cs/vkcs/docs/resources/networking_floatingip.md
 generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
 
 .PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
