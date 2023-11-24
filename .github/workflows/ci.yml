@@ -311,11 +311,8 @@ jobs:
           name: output
           path: _output/**
 
-      - name: Login Upbound
-        run: up login
+      - name: Publish Artifacts
+        run: up login && make publish BRANCH_NAME=${GITHUB_REF##*/}
         env:
           UP_USER: ${{ secrets.UP_USER }}
           UP_PASSWORD: ${{ secrets.UP_PASSWORD }}
-
-      - name: Publish Artifacts
-        run: make publish BRANCH_NAME=${GITHUB_REF##*/}
