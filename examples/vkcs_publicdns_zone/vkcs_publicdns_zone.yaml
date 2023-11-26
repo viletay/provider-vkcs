@@ -8,7 +8,7 @@ metadata:
   name: viletay-store
 spec:
   forProvider:
-    adminEmail: viletay
+    adminEmail: viletay@viletay.com
     expire: 3600000
     ttl: 120
     primaryDns: ns1.mcs.mail.ru
@@ -16,34 +16,31 @@ spec:
 
 ---
 apiVersion: publicdns.crossplane.io/v1alpha1
-kind: Zone
+kind: Record
 metadata:
   annotations:
-    meta.upbound.io/example-id: publicdns/v1alpha1/zone
+    meta.upbound.io/example-id: publicdns/v1alpha1/record
   labels:
-    testing.upbound.io/example-name: zone
-  name: rnd-viletay-store
+    testing.upbound.io/example-name: record
+  name: a-vault-viletay-store
 spec:
   forProvider:
-    adminEmail: viletay
-    expire: 3500000
-    zone: rnd.viletay.store
+    type: A
+    name: upbound
+    ip: 192.168.1.1
+    ttl: 60
+    zoneIdRef:
+      name: viletay-store
 
 #---
 #apiVersion: publicdns.crossplane.io/v1alpha1
 #kind: Record
 #metadata:
 #  annotations:
-#    meta.upbound.io/example-id: publicdns/v1alpha1/record
-#  labels:
-#    testing.upbound.io/example-name: record
-#  name: a-record-vault-rnd-viletay-store
+#    crossplane.io/external-name: d82c2eb2-91eb-4dda-a2e7-4ab359659e8a/cname/1c4545e5-3285-47a2-9c41-2a3514237521
+#  name: imported-dns-record
 #spec:
 #  forProvider:
-#    type: A
-#    name: vault
-#    ip: 100.70.136.136
-#    ttl: 60
-#    zoneIdSelector:
-#      matchLabels:
-#        testing.upbound.io/example-name: zone
+#    type: CNAME
+#    zoneIdRef:
+#      name: viletay-store

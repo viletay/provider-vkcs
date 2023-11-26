@@ -3,9 +3,10 @@ package publicdns
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
+	"strings"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
+	"github.com/pkg/errors"
 )
 
 // Configure configures the null group
@@ -15,8 +16,8 @@ func Configure(p *ujconfig.Provider) {
 	})
 	p.AddResourceConfigurator("vkcs_publicdns_record", func(r *ujconfig.Resource) {
 		r.ExternalName = ujconfig.IdentifierFromProvider
-		r.ExternalName.GetExternalNameFn = getNameFromFullyQualifiedID
-		r.ExternalName.GetIDFn = getFullyQualifiedIDfunc
+		r.ExternalName.GetExternalNameFn = getRecordExternalNameFn
+		r.ExternalName.GetIDFn = getRecordIDFn
 		r.References["zone_id"] = ujconfig.Reference{
 			Type: "Zone",
 		}
@@ -24,7 +25,7 @@ func Configure(p *ujconfig.Provider) {
 
 }
 
-func getNameFromFullyQualifiedID(tfstate map[string]any) (string, error) {
+func getRecordExternalNameFn(tfstate map[string]any) (string, error) {
 	id, ok := tfstate["id"]
 	if !ok {
 		return "", errors.New("undefined attribute: id")
@@ -33,11 +34,8 @@ func getNameFromFullyQualifiedID(tfstate map[string]any) (string, error) {
 	if !ok {
 		return "", errors.New("unexpected type: id")
 	}
-	return idStr, nil
-}
 
-func getFullyQualifiedIDfunc(_ context.Context, externalName string, parameters map[string]any, _ map[string]any) (string, error) {
-	zoneId, ok := parameters["zone_id"]
+	zoneId, ok := tfstate["zone_id"]
 	if !ok {
 		return "", errors.New("undefined attribute: zone_id")
 	}
@@ -46,7 +44,7 @@ func getFullyQualifiedIDfunc(_ context.Context, externalName string, parameters 
 		return "", errors.New("unexpected type: zone_id")
 	}
 
-	recordType, ok := parameters["type"]
+	recordType, ok := tfstate["type"]
 	if !ok {
 		return "", errors.New("undefined attribute: type")
 	}
@@ -54,6 +52,10 @@ func getFullyQualifiedIDfunc(_ context.Context, externalName string, parameters 
 	if !ok {
 		return "", errors.New("unexpected type: type")
 	}
+	return fmt.Sprintf("%s/%s/%s", zoneIdStr, recordTypeStr, idStr), nil
+}
 
-	return fmt.Sprintf("%s/%s/%s", zoneIdStr, recordTypeStr, externalName), nil
+func getRecordIDFn(ctx context.Context, externalName string, parameters map[string]any, providerConfig map[string]any) (string, error) {
+	idStr := strings.Split(externalName, "/")
+	return idStr[len(idStr)-1], nil
 }
