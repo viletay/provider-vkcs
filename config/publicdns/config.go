@@ -35,11 +35,11 @@ func getRecordExternalNameFn(tfstate map[string]any) (string, error) {
 		return "", errors.New("unexpected type: id")
 	}
 
-	zoneId, ok := tfstate["zone_id"]
+	zoneID, ok := tfstate["zone_id"]
 	if !ok {
 		return "", errors.New("undefined attribute: zone_id")
 	}
-	zoneIdStr, ok := zoneId.(string)
+	zoneIDStr, ok := zoneID.(string)
 	if !ok {
 		return "", errors.New("unexpected type: zone_id")
 	}
@@ -52,10 +52,10 @@ func getRecordExternalNameFn(tfstate map[string]any) (string, error) {
 	if !ok {
 		return "", errors.New("unexpected type: type")
 	}
-	return fmt.Sprintf("%s/%s/%s", zoneIdStr, recordTypeStr, idStr), nil
+	return fmt.Sprintf("%s/%s/%s", zoneIDStr, recordTypeStr, idStr), nil
 }
 
-func getRecordIDFn(ctx context.Context, externalName string, parameters map[string]any, providerConfig map[string]any) (string, error) {
+func getRecordIDFn(_ context.Context, externalName string, _ map[string]any, _ map[string]any) (string, error) {
 	idStr := strings.Split(externalName, "/")
 	return idStr[len(idStr)-1], nil
 }
