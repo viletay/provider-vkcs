@@ -11,6 +11,7 @@ import (
 
 	image "github.com/viletay/provider-vkcs/internal/controller/images/image"
 	network "github.com/viletay/provider-vkcs/internal/controller/networking/network"
+	subnet "github.com/viletay/provider-vkcs/internal/controller/networking/subnet"
 	providerconfig "github.com/viletay/provider-vkcs/internal/controller/providerconfig"
 	record "github.com/viletay/provider-vkcs/internal/controller/publicdns/record"
 	zone "github.com/viletay/provider-vkcs/internal/controller/publicdns/zone"
@@ -22,6 +23,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		image.Setup,
 		network.Setup,
+		subnet.Setup,
 		providerconfig.Setup,
 		record.Setup,
 		zone.Setup,

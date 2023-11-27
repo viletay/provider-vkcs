@@ -14,6 +14,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vkcs_publicdns_record":   config.IdentifierFromProvider,
 	"vkcs_images_image":       config.IdentifierFromProvider,
 	"vkcs_networking_network": config.IdentifierFromProvider,
+	"vkcs_networking_subnet":  config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

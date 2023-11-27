@@ -1,0 +1,49 @@
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Subnet
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/subnet
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    name: example
+    description: Example subnet
+    networkIdRef:
+      name: example
+    cidr: 192.168.1.0/24
+    tags:
+      - example
+      - subnet
+
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Subnet
+metadata:
+  annotations:
+    meta.upbound.io/example-id: images/v1alpha1/subnet
+    crossplane.io/external-name: c4f89da6-529f-4a08-9df1-6b95842a07b9
+  labels:
+    testing.upbound.io/example-name: imported-subnet-01
+  name: imported-subnet-01
+spec:
+  managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
+  forProvider: {}
+
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Subnet
+metadata:
+  annotations:
+    meta.upbound.io/example-id: images/v1alpha1/network
+    crossplane.io/external-name: c6fafdba-deb7-4ad0-83fd-ec893dedfb69
+  labels:
+    testing.upbound.io/example-name: imported-subnet-02
+  name: imported-subnet-02
+spec:
+  managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
+  forProvider: {}

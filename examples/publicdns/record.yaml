@@ -30,6 +30,7 @@ metadata:
   name: imported-example-record
 spec:
   managementPolicies: ["Create", "Observe"]
+  deletionPolicy: Orphan
   forProvider:
     type: A
     zoneIdRef:

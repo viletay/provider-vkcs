@@ -27,4 +27,5 @@ metadata:
   name: imported-network
 spec:
   managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
   forProvider: {}
