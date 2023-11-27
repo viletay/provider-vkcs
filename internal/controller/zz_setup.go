@@ -12,6 +12,7 @@ import (
 	image "github.com/viletay/provider-vkcs/internal/controller/images/image"
 	network "github.com/viletay/provider-vkcs/internal/controller/networking/network"
 	secgroup "github.com/viletay/provider-vkcs/internal/controller/networking/secgroup"
+	secgrouprule "github.com/viletay/provider-vkcs/internal/controller/networking/secgrouprule"
 	subnet "github.com/viletay/provider-vkcs/internal/controller/networking/subnet"
 	providerconfig "github.com/viletay/provider-vkcs/internal/controller/providerconfig"
 	record "github.com/viletay/provider-vkcs/internal/controller/publicdns/record"
@@ -25,6 +26,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		image.Setup,
 		network.Setup,
 		secgroup.Setup,
+		secgrouprule.Setup,
 		subnet.Setup,
 		providerconfig.Setup,
 		record.Setup,

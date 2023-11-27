@@ -25,6 +25,15 @@ func (l *SecgroupList) GetItems() []resource.Managed {
 	return items
 }
 
+// GetItems of this SecgroupRuleList.
+func (l *SecgroupRuleList) GetItems() []resource.Managed {
+	items := make([]resource.Managed, len(l.Items))
+	for i := range l.Items {
+		items[i] = &l.Items[i]
+	}
+	return items
+}
+
 // GetItems of this SubnetList.
 func (l *SubnetList) GetItems() []resource.Managed {
 	items := make([]resource.Managed, len(l.Items))

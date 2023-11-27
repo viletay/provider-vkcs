@@ -18,4 +18,14 @@ func Configure(p *ujconfig.Provider) {
 	p.AddResourceConfigurator("vkcs_networking_secgroup", func(r *ujconfig.Resource) {
 		r.ExternalName = ujconfig.IdentifierFromProvider
 	})
+	p.AddResourceConfigurator("vkcs_networking_secgroup_rule", func(r *ujconfig.Resource) {
+		r.ExternalName = ujconfig.IdentifierFromProvider
+		r.References["security_group_id"] = ujconfig.Reference{
+			Type: "Secgroup",
+		}
+		r.References["remote_group_id"] = ujconfig.Reference{
+			Type: "Secgroup",
+		}
+	})
+
 }

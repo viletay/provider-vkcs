@@ -1,0 +1,19 @@
+apiVersion: networking.crossplane.io/v1alpha1
+kind: SecgroupRule
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/secgrouprule
+  labels:
+    testing.upbound.io/example-name: etcd_app_clients
+  name: etcd-app-clients
+spec:
+  forProvider:
+    description: etcd app clients rule
+    direction: ingress
+    portRangeMax: 2379
+    portRangeMin: 2379
+    protocol: tcp
+    remoteIpPrefix: 192.168.199.0/24
+    securityGroupIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: etcd
