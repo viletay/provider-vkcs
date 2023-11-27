@@ -1,0 +1,13 @@
+---
+apiVersion: images.crossplane.io/v1alpha1
+kind: Image
+metadata:
+  annotations:
+    meta.upbound.io/example-id: images/v1alpha1/image
+    crossplane.io/external-name: 2f57663e-fa08-4af9-8bbf-a504c8f805a8
+  labels:
+    testing.upbound.io/example-name: imported-image
+  name: imported-image
+spec:
+  managementPolicies: ["Observe"]
+  forProvider: {}

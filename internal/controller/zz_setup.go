@@ -9,6 +9,7 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
+	image "github.com/viletay/provider-vkcs/internal/controller/images/image"
 	providerconfig "github.com/viletay/provider-vkcs/internal/controller/providerconfig"
 	record "github.com/viletay/provider-vkcs/internal/controller/publicdns/record"
 	zone "github.com/viletay/provider-vkcs/internal/controller/publicdns/zone"
@@ -18,6 +19,7 @@ import (
 // the supplied manager.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
+		image.Setup,
 		providerconfig.Setup,
 		record.Setup,
 		zone.Setup,

@@ -5,7 +5,7 @@ metadata:
   annotations:
     meta.upbound.io/example-id: publicdns/v1alpha1/record
   labels:
-    testing.upbound.io/example-name: a-record-example
+    testing.upbound.io/example-name: example-record
   name: example-record
 spec:
   forProvider:
@@ -16,6 +16,8 @@ spec:
     zoneIdRef:
       name: example-zone
 
+
+# TODO: fix problem with Observe-only Formatted String external name import
 ---
 apiVersion: publicdns.crossplane.io/v1alpha1
 kind: Record
