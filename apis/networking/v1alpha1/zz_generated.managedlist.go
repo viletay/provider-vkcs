@@ -25,6 +25,15 @@ func (l *PortList) GetItems() []resource.Managed {
 	return items
 }
 
+// GetItems of this PortSecgroupAssociateList.
+func (l *PortSecgroupAssociateList) GetItems() []resource.Managed {
+	items := make([]resource.Managed, len(l.Items))
+	for i := range l.Items {
+		items[i] = &l.Items[i]
+	}
+	return items
+}
+
 // GetItems of this SecgroupList.
 func (l *SecgroupList) GetItems() []resource.Managed {
 	items := make([]resource.Managed, len(l.Items))

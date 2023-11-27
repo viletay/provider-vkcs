@@ -45,4 +45,14 @@ func Configure(p *ujconfig.Provider) {
 			Type: "Secgroup",
 		}
 	})
+	p.AddResourceConfigurator("vkcs_networking_port_secgroup_associate", func(r *ujconfig.Resource) {
+		r.ExternalName = ujconfig.IdentifierFromProvider
+		r.References["port_id"] = ujconfig.Reference{
+			Type: "Port",
+		}
+		r.References["security_group_ids"] = ujconfig.Reference{
+			Type: "Secgroup",
+		}
+	})
+
 }
