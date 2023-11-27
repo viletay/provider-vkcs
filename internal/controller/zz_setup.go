@@ -14,6 +14,7 @@ import (
 	secgroup "github.com/viletay/provider-vkcs/internal/controller/networking/secgroup"
 	secgrouprule "github.com/viletay/provider-vkcs/internal/controller/networking/secgrouprule"
 	subnet "github.com/viletay/provider-vkcs/internal/controller/networking/subnet"
+	subnetroute "github.com/viletay/provider-vkcs/internal/controller/networking/subnetroute"
 	providerconfig "github.com/viletay/provider-vkcs/internal/controller/providerconfig"
 	record "github.com/viletay/provider-vkcs/internal/controller/publicdns/record"
 	zone "github.com/viletay/provider-vkcs/internal/controller/publicdns/zone"
@@ -28,6 +29,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		secgroup.Setup,
 		secgrouprule.Setup,
 		subnet.Setup,
+		subnetroute.Setup,
 		providerconfig.Setup,
 		record.Setup,
 		zone.Setup,

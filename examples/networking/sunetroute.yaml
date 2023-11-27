@@ -1,0 +1,15 @@
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: SubnetRoute
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/subnetroute
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    destinationCidr: 192.168.2.0/24
+    nextHop: 192.168.1.1
+    subnetIdRef:
+      name: example

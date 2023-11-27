@@ -15,6 +15,12 @@ func Configure(p *ujconfig.Provider) {
 			Type: "Network",
 		}
 	})
+	p.AddResourceConfigurator("vkcs_networking_subnet_route", func(r *ujconfig.Resource) {
+		r.ExternalName = ujconfig.IdentifierFromProvider
+		r.References["subnet_id"] = ujconfig.Reference{
+			Type: "Subnet",
+		}
+	})
 	p.AddResourceConfigurator("vkcs_networking_secgroup", func(r *ujconfig.Resource) {
 		r.ExternalName = ujconfig.IdentifierFromProvider
 	})
