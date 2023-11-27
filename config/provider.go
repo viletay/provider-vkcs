@@ -7,6 +7,7 @@ package config
 import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
+
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 	"github.com/viletay/provider-vkcs/config/images"
 	"github.com/viletay/provider-vkcs/config/networking"

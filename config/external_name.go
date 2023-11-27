@@ -19,6 +19,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vkcs_networking_subnet_route":            config.IdentifierFromProvider,
 	"vkcs_networking_port":                    config.IdentifierFromProvider,
 	"vkcs_networking_port_secgroup_associate": config.IdentifierFromProvider,
+	"vkcs_networking_router":                  config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

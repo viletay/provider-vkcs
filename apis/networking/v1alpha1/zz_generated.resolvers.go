@@ -116,6 +116,32 @@ func (mg *PortSecgroupAssociate) ResolveReferences(ctx context.Context, c client
 	return nil
 }
 
+// ResolveReferences of this Router.
+func (mg *Router) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPIResolver(c, mg)
+
+	var rsp reference.ResolutionResponse
+	var err error
+
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.ExternalNetworkID),
+		Extract:      reference.ExternalName(),
+		Reference:    mg.Spec.ForProvider.ExternalNetworkIDRef,
+		Selector:     mg.Spec.ForProvider.ExternalNetworkIDSelector,
+		To: reference.To{
+			List:    &NetworkList{},
+			Managed: &Network{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.ExternalNetworkID")
+	}
+	mg.Spec.ForProvider.ExternalNetworkID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.ExternalNetworkIDRef = rsp.ResolvedReference
+
+	return nil
+}
+
 // ResolveReferences of this SecgroupRule.
 func (mg *SecgroupRule) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)

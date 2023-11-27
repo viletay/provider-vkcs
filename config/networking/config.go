@@ -54,5 +54,10 @@ func Configure(p *ujconfig.Provider) {
 			Type: "Secgroup",
 		}
 	})
-
+	p.AddResourceConfigurator("vkcs_networking_router", func(r *ujconfig.Resource) {
+		r.ExternalName = ujconfig.IdentifierFromProvider
+		r.References["external_network_id"] = ujconfig.Reference{
+			Type: "Network",
+		}
+	})
 }

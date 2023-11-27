@@ -13,6 +13,7 @@ import (
 	network "github.com/viletay/provider-vkcs/internal/controller/networking/network"
 	port "github.com/viletay/provider-vkcs/internal/controller/networking/port"
 	portsecgroupassociate "github.com/viletay/provider-vkcs/internal/controller/networking/portsecgroupassociate"
+	router "github.com/viletay/provider-vkcs/internal/controller/networking/router"
 	secgroup "github.com/viletay/provider-vkcs/internal/controller/networking/secgroup"
 	secgrouprule "github.com/viletay/provider-vkcs/internal/controller/networking/secgrouprule"
 	subnet "github.com/viletay/provider-vkcs/internal/controller/networking/subnet"
@@ -30,6 +31,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		network.Setup,
 		port.Setup,
 		portsecgroupassociate.Setup,
+		router.Setup,
 		secgroup.Setup,
 		secgrouprule.Setup,
 		subnet.Setup,
