@@ -9,6 +9,7 @@ import (
 	_ "embed"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
+	"github.com/viletay/provider-vkcs/config/images"
 	"github.com/viletay/provider-vkcs/config/publicdns"
 )
 
@@ -36,6 +37,7 @@ func GetProvider() *ujconfig.Provider {
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
 		publicdns.Configure,
+		images.Configure,
 	} {
 		configure(pc)
 	}

@@ -10,8 +10,7 @@ metadata:
   name: imported-example-zone
 spec:
   managementPolicies: ["Observe"]
-  forProvider:
-    zone: viletay.store
+  forProvider: {}
 
 ---
 apiVersion: publicdns.crossplane.io/v1alpha1
@@ -20,7 +19,7 @@ metadata:
   annotations:
     meta.upbound.io/example-id: publicdns/v1alpha1/zone
   labels:
-    testing.upbound.io/example-name: example-viletay-store
+    testing.upbound.io/example-name: example-zone
   name: example-zone
 spec:
   forProvider:
