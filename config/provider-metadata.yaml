@@ -1456,6 +1456,8 @@ resources:
             id: string →  ID of the resource.
             name: required string →  The name of the user. Changing this creates a new user.
             password: required sensitive string →  The password of the user.
+            skip_deletion: optional boolean →  Boolean to control whether to user deletion should be skipped. If set to true, the resource will be removed from the state, but the remote object will not be deleted. This is useful for PostgreSQL, where users cannot be deleted from the API if they own database objects.
+            vendor_options: optional →  New since v0.5.3.
         importStatements:
             - terraform import vkcs_db_user.myuser b29f9249-b0e0-43f2-9278-34ed8284a4dc/myusername
     vkcs_dc_bgp_instance:
@@ -2055,55 +2057,55 @@ resources:
               manifest: |-
                 {
                   "availability_zone": "MS1",
-                  "cluster_template_id": "${data.vkcs_kubernetes_clustertemplate.ct.id}",
+                  "cluster_template_id": "${data.vkcs_kubernetes_clustertemplate.k8s_24.id}",
                   "depends_on": [
-                    "${vkcs_networking_router_interface.k8s}"
+                    "${vkcs_networking_router_interface.app}"
                   ],
                   "floating_ip_enabled": true,
-                  "insecure_registries": [
-                    "1.2.3.4"
-                  ],
                   "labels": {
+                    "clean_volumes": "true",
                     "cloud_monitoring": "true",
-                    "kube_log_level": "2"
+                    "cluster_node_volume_type": "ceph-ssd",
+                    "kube_log_level": "2",
+                    "master_volume_size": "100"
                   },
                   "master_count": 1,
-                  "master_flavor": "${data.vkcs_compute_flavor.k8s.id}",
+                  "master_flavor": "${data.vkcs_compute_flavor.basic.id}",
                   "name": "k8s-cluster",
-                  "network_id": "${vkcs_networking_network.k8s.id}",
-                  "subnet_id": "${vkcs_networking_subnet.k8s-subnetwork.id}"
+                  "network_id": "${vkcs_networking_network.app.id}",
+                  "subnet_id": "${vkcs_networking_subnet.app.id}"
                 }
               references:
-                cluster_template_id: data.vkcs_kubernetes_clustertemplate.ct.id
-                master_flavor: data.vkcs_compute_flavor.k8s.id
-                network_id: vkcs_networking_network.k8s.id
-                subnet_id: vkcs_networking_subnet.k8s-subnetwork.id
+                cluster_template_id: data.vkcs_kubernetes_clustertemplate.k8s_24.id
+                master_flavor: data.vkcs_compute_flavor.basic.id
+                network_id: vkcs_networking_network.app.id
+                subnet_id: vkcs_networking_subnet.app.id
         argumentDocs:
             all_labels: map of string →  The read-only map of all cluster labels.New since v0.5.1.
             api_address: string →  COE API address.
-            api_lb_fip: optional string →  API LoadBalancer fip.
-            api_lb_vip: optional string →  API LoadBalancer vip.
+            api_lb_fip: optional string →  API LoadBalancer fip. IP address field.
+            api_lb_vip: optional string →  API LoadBalancer vip. IP address field.
             availability_zone: required string →  Availability zone of the cluster.
             calico_ipv4pool: 'to set subnet where pods will be created. Default 10.100.0.0/16. Note: Updating this value while the cluster is running is dangerous because it can lead to loss of connectivity of the cluster nodes.'
             clean_volumes: 'to remove pvc volumes when deleting a cluster. Default False. Note: Changes to this value will be applied immediately.'
-            cloud_monitoring: to enable cloud monitoring feature.
+            cloud_monitoring: to enable cloud monitoring feature. Default False.
             cluster_node_volume_type: to set master vm volume type. Default ceph-hdd.
             cluster_template_id: required string →  The UUID of the Kubernetes cluster template. It can be obtained using the cluster_template data source.
             created_at: string →  The time at which cluster was created.
             dns_domain: optional string →  Custom DNS cluster domain. Changing this creates a new cluster.
-            etcd_volume_size: to set etcd volume size. Default 10Gb.
+            etcd_volume_size: to set etcd volume size in GB. Default 10.
             floating_ip_enabled: required boolean →  Floating ip is enabled.
             id: string →  ID of the resource.
             ingress_floating_ip: optional string →  Floating IP created for ingress service.
             insecure_registries: optional string →  Addresses of registries from which you can download images without checking certificates. Changing this creates a new cluster.
             keypair: optional string →  The name of the Compute service SSH keypair. Changing this creates a new cluster.
-            kube_log_level: to set log level for kubelet in range 0 to 8.
+            kube_log_level: to set log level for kubelet in range 0 to 8. Default 0.
             labels: 'optional map of string →  The list of optional key value pairs representing additional properties of the cluster. Note: Updating this attribute will not immediately apply the changes; these options will be used when recreating or deleting cluster nodes, for example, during an upgrade operation.'
             loadbalancer_subnet_id: optional string →  The UUID of the load balancer's subnet. Changing this creates new cluster.
             master_addresses: string →  IP addresses of the master node of the cluster.
             master_count: optional number →  The number of master nodes for the cluster. Changing this creates a new cluster.
             master_flavor: optional string →  The UUID of a flavor for the master nodes. If master_flavor is not present, value from cluster_template will be used.
-            master_volume_size: to set master vm volume size. Default 50Gb.
+            master_volume_size: to set master vm volume size in GB. Default 50.
             name: required string →  The name of the cluster. Changing this creates a new cluster. Should match the pattern ^[a-zA-Z][a-zA-Z0-9_.-]*$.
             network_id: required string →  UUID of the cluster's network.
             pods_network_cidr: optional string →  Network cidr of k8s virtual network
@@ -2156,24 +2158,6 @@ resources:
                 }
               references:
                 cluster_id: vkcs_kubernetes_cluster.k8s-cluster.id
-              dependencies:
-                vkcs_kubernetes_cluster.k8s-cluster: |-
-                    {
-                      "availability_zone": "MS1",
-                      "cluster_template_id": "${data.vkcs_kubernetes_clustertemplate.ct.id}",
-                      "depends_on": [
-                        "${vkcs_networking_router_interface.k8s}"
-                      ],
-                      "floating_ip_enabled": true,
-                      "insecure_registries": [
-                        "1.2.3.4"
-                      ],
-                      "master_count": 1,
-                      "master_flavor": "${data.vkcs_compute_flavor.k8s.id}",
-                      "name": "k8s-cluster",
-                      "network_id": "${vkcs_networking_network.k8s.id}",
-                      "subnet_id": "${vkcs_networking_subnet.k8s-subnetwork.id}"
-                    }
         argumentDocs:
             autoscaling_enabled: optional boolean →  Determines whether the autoscaling is enabled.
             availability_zones: |-
@@ -2521,23 +2505,20 @@ resources:
         name: vkcs_networking_floatingip
         title: vkcs_networking_floatingip
         examples:
-            - name: floatip_1
+            - name: base_fip
               manifest: |-
                 {
-                  "pool": "public"
+                  "description": "floating ip in external net tf example",
+                  "pool": "ext-net"
                 }
-            - name: floatip_1
+            - name: associated_fip
               manifest: |-
                 {
-                  "pool": "${data.vkcs_networking_network.ext_network.name}",
-                  "subnet_ids": [
-                    "\u003csubnet1_id\u003e",
-                    "\u003csubnet2_id\u003e",
-                    "\u003csubnet3_id\u003e"
-                  ]
+                  "pool": "ext-net",
+                  "port_id": "${vkcs_networking_port.persistent_etcd.id}"
                 }
               references:
-                pool: data.vkcs_networking_network.ext_network.name
+                port_id: vkcs_networking_port.persistent_etcd.id
         argumentDocs:
             address: optional string →  The actual floating IP address itself.
             description: optional string →  Human-readable description for the floating IP.
@@ -2558,17 +2539,18 @@ resources:
         name: vkcs_networking_floatingip_associate
         title: vkcs_networking_floatingip_associate
         examples:
-            - name: fip_1
+            - name: floatingip-associate
               manifest: |-
                 {
-                  "floating_ip": "1.2.3.4",
-                  "port_id": "${vkcs_networking_port.port_1.id}"
+                  "depends_on": [
+                    "${vkcs_networking_router_interface.db}"
+                  ],
+                  "floating_ip": "${vkcs_networking_floatingip.base_fip.address}",
+                  "port_id": "${vkcs_networking_port.persistent_etcd.id}"
                 }
-              dependencies:
-                vkcs_networking_port.port_1: |-
-                    {
-                      "network_id": "a5bbd213-e1d3-49b6-aed1-9df60ea94b9a"
-                    }
+              references:
+                floating_ip: vkcs_networking_floatingip.base_fip.address
+                port_id: vkcs_networking_port.persistent_etcd.id
         argumentDocs:
             fixed_ip: optional string →  One of the port's IP addresses.
             floating_ip: required string →  IP Address of an existing floating IP.
@@ -2623,6 +2605,10 @@ resources:
                   "network_id": "${vkcs_networking_network.db.id}",
                   "security_group_ids": [
                     "${vkcs_networking_secgroup.etcd.id}"
+                  ],
+                  "tags": [
+                    "tf-example",
+                    "etcd"
                   ]
                 }
               references:
@@ -2664,30 +2650,36 @@ resources:
         name: vkcs_networking_port_secgroup_associate
         title: vkcs_networking_port_secgroup_associate
         examples:
-            - name: port_1
+            - name: append_secgroups
               manifest: |-
                 {
-                  "port_id": "${data.vkcs_networking_port.system_port.id}",
+                  "port_id": "${vkcs_networking_port.persistent_etcd.id}",
                   "security_group_ids": [
-                    "${data.vkcs_networking_secgroup.secgroup.id}"
+                    "${vkcs_networking_secgroup.etcd.id}"
                   ]
                 }
-            - name: port_1
+              references:
+                port_id: vkcs_networking_port.persistent_etcd.id
+            - name: replace_secgroups
               manifest: |-
                 {
-                  "enforce": "true",
-                  "port_id": "${data.vkcs_networking_port.system_port.id}",
+                  "enforce": true,
+                  "port_id": "${vkcs_networking_port.persistent_etcd.id}",
                   "security_group_ids": [
-                    "${data.vkcs_networking_secgroup.secgroup.id}"
+                    "${vkcs_networking_secgroup.http.id}"
                   ]
                 }
-            - name: port_1
+              references:
+                port_id: vkcs_networking_port.persistent_etcd.id
+            - name: remove_secgroups
               manifest: |-
                 {
-                  "enforce": "true",
-                  "port_id": "${data.vkcs_networking_port.system_port.id}",
+                  "enforce": true,
+                  "port_id": "${vkcs_networking_port.persistent_etcd.id}",
                   "security_group_ids": []
                 }
+              references:
+                port_id: vkcs_networking_port.persistent_etcd.id
         argumentDocs:
             all_security_group_ids: set of string →  The collection of Security Group IDs on the port which have been explicitly and implicitly added.
             enforce: optional boolean →  Whether to replace or append the list of security groups, specified in the security_group_ids. Defaults to false.
@@ -2707,7 +2699,10 @@ resources:
               manifest: |-
                 {
                   "external_network_id": "${data.vkcs_networking_network.extnet.id}",
-                  "name": "router-tf-example"
+                  "name": "router-tf-example",
+                  "tags": [
+                    "tf-example"
+                  ]
                 }
               references:
                 external_network_id: data.vkcs_networking_network.extnet.id
@@ -2783,11 +2778,11 @@ resources:
         name: vkcs_networking_secgroup
         title: vkcs_networking_secgroup
         examples:
-            - name: secgroup_1
+            - name: etcd
               manifest: |-
                 {
-                  "description": "My security group",
-                  "name": "secgroup_1"
+                  "description": "etcd service",
+                  "name": "etcd-tf-example"
                 }
         argumentDocs:
             all_tags: set of string →  The collection of tags assigned on the security group, which have been explicitly and implicitly added.
@@ -2806,23 +2801,43 @@ resources:
         name: vkcs_networking_secgroup_rule
         title: vkcs_networking_secgroup_rule
         examples:
-            - name: secgroup_rule_1
+            - name: etcd_app_clients
               manifest: |-
                 {
+                  "description": "etcd app clients rule",
                   "direction": "ingress",
-                  "ethertype": "IPv4",
-                  "port_range_max": 22,
-                  "port_range_min": 22,
+                  "port_range_max": 2379,
+                  "port_range_min": 2379,
                   "protocol": "tcp",
-                  "remote_ip_prefix": "0.0.0.0/0",
-                  "security_group_id": "${vkcs_networking_secgroup.secgroup_1.id}"
+                  "remote_ip_prefix": "${vkcs_networking_subnet.app.cidr}",
+                  "security_group_id": "${vkcs_networking_secgroup.etcd.id}"
                 }
-              dependencies:
-                vkcs_networking_secgroup.secgroup_1: |-
-                    {
-                      "description": "My security group",
-                      "name": "secgroup_1"
-                    }
+              references:
+                remote_ip_prefix: vkcs_networking_subnet.app.cidr
+                security_group_id: vkcs_networking_secgroup.etcd.id
+            - name: all_udp
+              manifest: |-
+                {
+                  "description": "All inbound UDP traffic from etcd hosts",
+                  "direction": "ingress",
+                  "protocol": "udp",
+                  "remote_group_id": "${vkcs_networking_secgroup.etcd.id}",
+                  "security_group_id": "${vkcs_networking_secgroup.etcd.id}"
+                }
+              references:
+                remote_group_id: vkcs_networking_secgroup.etcd.id
+                security_group_id: vkcs_networking_secgroup.etcd.id
+            - name: all
+              manifest: |-
+                {
+                  "description": "Any inbound traffic from etcd hosts",
+                  "direction": "ingress",
+                  "remote_group_id": "${vkcs_networking_secgroup.etcd.id}",
+                  "security_group_id": "${vkcs_networking_secgroup.etcd.id}"
+                }
+              references:
+                remote_group_id: vkcs_networking_secgroup.etcd.id
+                security_group_id: vkcs_networking_secgroup.etcd.id
         argumentDocs:
             description: optional string →  A description of the rule. Changing this creates a new security group rule.
             direction: required string →  The direction of the rule, valid values are ingress or egress. Changing this creates a new security group rule.
@@ -3324,6 +3339,7 @@ resources:
             id: string →  ID of the resource.
             name: optional string →  The name of the group. Changing this updates the name of the existing group.
             region: optional string →  The region in which to obtain the Networking client. A Networking client is needed to create an endpoint group. If omitted, the region argument of the provider is used. Changing this creates a new group.
+            sdn: 'optional string →  SDN to use for this resource. Must be one of following: "neutron", "sprut". Default value is project''s default SDN.New since v0.5.3.'
             type: optional string →  The type of the endpoints in the group. A valid value is subnet, cidr, network, router, or vlan. Changing this creates a new group.
         importStatements:
             - terraform import vkcs_vpnaas_endpoint_group.group_1 832cb7f3-59fe-40cf-8f64-8350ffc03272
@@ -3349,6 +3365,7 @@ resources:
             pfs: optional string →  The perfect forward secrecy mode. Valid values are Group2, Group5 and Group14. Default is Group5. Changing this updates the existing policy.
             phase1_negotiation_mode: optional string →  The IKE mode. A valid value is main, which is the default. Changing this updates the existing policy.
             region: optional string →  The region in which to obtain the Networking client. A Networking client is needed to create a VPN service. If omitted, the region argument of the provider is used. Changing this creates a new service.
+            sdn: 'optional string →  SDN to use for this resource. Must be one of following: "neutron", "sprut". Default value is project''s default SDN.New since v0.5.3.'
             units: optional string →  The units for the lifetime of the security association. Can be either seconds or kilobytes. Default is seconds.
             value: optional number →  The value for the lifetime of the security association. Must be a positive integer. Default is 3600.
         importStatements:
@@ -3374,6 +3391,7 @@ resources:
             name: optional string →  The name of the policy. Changing this updates the name of the existing policy.
             pfs: optional string →  The perfect forward secrecy mode. Valid values are Group2, Group5 and Group14. Default is Group5. Changing this updates the existing policy.
             region: optional string →  The region in which to obtain the Networking client. A Networking client is needed to create an IPSec policy. If omitted, the region argument of the provider is used. Changing this creates a new policy.
+            sdn: 'optional string →  SDN to use for this resource. Must be one of following: "neutron", "sprut". Default value is project''s default SDN.New since v0.5.3.'
             transform_protocol: optional string →  The transform protocol. Valid values are ESP, AH and AH-ESP. Changing this updates the existing policy. Default is ESP.
             units: optional string →  The units for the lifetime of the security association. Can be either seconds or kilobytes. Default is seconds.
             value: optional number →  The value for the lifetime of the security association. Must be a positive integer. Default is 3600.
@@ -3401,6 +3419,7 @@ resources:
             name: optional string →  The name of the service. Changing this updates the name of the existing service.
             region: optional string →  The region in which to obtain the Networking client. A Networking client is needed to create a VPN service. If omitted, the region argument of the provider is used. Changing this creates a new service.
             router_id: required string →  The ID of the router. Changing this creates a new service.
+            sdn: 'optional string →  SDN to use for this resource. Must be one of following: "neutron", "sprut". Default value is project''s default SDN.New since v0.5.3.'
             status: string →  Indicates whether IPsec VPN service is currently operational. Values are ACTIVE, DOWN, BUILD, ERROR, PENDING_CREATE, PENDING_UPDATE, or PENDING_DELETE.
             subnet_id: optional string →  SubnetID is the ID of the subnet. Default is null.
         importStatements:
@@ -3432,6 +3451,7 @@ resources:
                   "peer_ep_group_id": "${vkcs_vpnaas_endpoint_group.group_1.id}",
                   "peer_id": "192.168.10.1",
                   "psk": "secret",
+                  "sdn": "neutron",
                   "vpnservice_id": "${vkcs_vpnaas_service.service.id}"
                 }
               dependencies:
@@ -3441,6 +3461,7 @@ resources:
                         "10.0.0.24/24",
                         "10.0.0.25/24"
                       ],
+                      "sdn": "neutron",
                       "type": "cidr"
                     }
                 vkcs_vpnaas_endpoint_group.group_2: |-
@@ -3448,19 +3469,23 @@ resources:
                       "endpoints": [
                         "${vkcs_networking_subnet.subnet.id}"
                       ],
+                      "sdn": "neutron",
                       "type": "subnet"
                     }
                 vkcs_vpnaas_ike_policy.policy_2: |-
                     {
-                      "name": "ike-policy"
+                      "name": "ike-policy",
+                      "sdn": "neutron"
                     }
                 vkcs_vpnaas_ipsec_policy.policy_1: |-
                     {
-                      "name": "ipsec-policy"
+                      "name": "ipsec-policy",
+                      "sdn": "neutron"
                     }
                 vkcs_vpnaas_service.service: |-
                     {
-                      "router_id": "${vkcs_networking_router.router.id}"
+                      "router_id": "${vkcs_networking_router.router.id}",
+                      "sdn": "neutron"
                     }
         argumentDocs:
             action: optional string →  The dead peer detection (DPD) action. A valid value is clear, hold, restart, disabled, or restart-by-peer. Default value is hold.
@@ -3482,6 +3507,7 @@ resources:
             peer_id: required string →  The peer router identity for authentication. A valid value is an IPv4 address, IPv6 address, e-mail address, key ID, or FQDN. Typically, this value matches the peer_address value. Changing this updates the existing policy.
             psk: required string →  The pre-shared key. A valid value is any string.
             region: optional string →  The region in which to obtain the Networking client. A Networking client is needed to create an IPSec site connection. If omitted, the region argument of the provider is used. Changing this creates a new site connection.
+            sdn: 'optional string →  SDN to use for this resource. Must be one of following: "neutron", "sprut". Default value is project''s default SDN.New since v0.5.3.'
             timeout: optional number →  The dead peer detection (DPD) timeout in seconds. A valid value is a positive integer that is greater than the DPD interval value. Default is 120.
             vpnservice_id: required string →  The ID of the VPN service. Changing this creates a new connection.
         importStatements:
