@@ -33,5 +33,16 @@ func Configure(p *ujconfig.Provider) {
 			Type: "Secgroup",
 		}
 	})
-
+	p.AddResourceConfigurator("vkcs_networking_port", func(r *ujconfig.Resource) {
+		r.ExternalName = ujconfig.IdentifierFromProvider
+		r.References["network_id"] = ujconfig.Reference{
+			Type: "Network",
+		}
+		r.References["fixed_ip.subnet_id"] = ujconfig.Reference{
+			Type: "Subnet",
+		}
+		r.References["security_group_ids"] = ujconfig.Reference{
+			Type: "Secgroup",
+		}
+	})
 }

@@ -1,0 +1,62 @@
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Port
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/port
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    name: example
+    fixedIp:
+      - subnetIdRef:
+          name: example
+    networkIdRef:
+      name: example
+    securityGroupIdsRefs:
+      - name: example
+      - name: imported-secgroup
+    tags:
+      - example
+      - port
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Port
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/port
+    crossplane.io/external-name: 12eae77f-f068-4edf-90fa-dd8f3d4a5cde
+  labels:
+    testing.upbound.io/example-name: imported-example
+  name: imported-example
+spec:
+  managementPolicies: [ "Observe" ]
+  deletionPolicy: Orphan
+  forProvider: {}
+
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Port
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/port
+  labels:
+    testing.upbound.io/example-name: example-with-fixed-ip
+  name: example-with-fixed-ip
+spec:
+  forProvider:
+    name: example-with-fixed-ip
+    fixedIp:
+      - subnetIdRef:
+          name: example
+        ipAddress: 192.168.1.101
+    networkIdRef:
+      name: example
+    securityGroupIdsRefs:
+      - name: example
+      - name: imported-secgroup
+    tags:
+      - example
+      - port
