@@ -1,0 +1,34 @@
+---
+apiVersion: publicdns.crossplane.io/v1alpha1
+kind: Record
+metadata:
+  annotations:
+    meta.upbound.io/example-id: publicdns/v1alpha1/record
+  labels:
+    testing.upbound.io/example-name: a-record-example
+  name: example-record
+spec:
+  forProvider:
+    type: A
+    name: upbound
+    ip: 192.168.1.1
+    ttl: 60
+    zoneIdRef:
+      name: example-zone
+
+---
+apiVersion: publicdns.crossplane.io/v1alpha1
+kind: Record
+metadata:
+  annotations:
+    meta.upbound.io/example-id: publicdns/v1alpha1/record
+    crossplane.io/external-name: 510bd063-6d1f-48a2-a41e-8f20a638b07d/a/b0851cf8-dbba-4c7e-a434-4f2bf3297aef
+  labels:
+    testing.upbound.io/example-name: imported-example-record
+  name: imported-example-record
+spec:
+  managementPolicies: ["Create", "Observe"]
+  forProvider:
+    type: A
+    zoneIdRef:
+      name: imported-example-zone

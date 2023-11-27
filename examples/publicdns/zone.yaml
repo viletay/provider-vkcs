@@ -1,0 +1,31 @@
+---
+apiVersion: publicdns.crossplane.io/v1alpha1
+kind: Zone
+metadata:
+  annotations:
+    meta.upbound.io/example-id: publicdns/v1alpha1/zone
+    crossplane.io/external-name: 510bd063-6d1f-48a2-a41e-8f20a638b07d
+  labels:
+    testing.upbound.io/example-name: imported-example-zone
+  name: imported-example-zone
+spec:
+  managementPolicies: ["Observe"]
+  forProvider:
+    zone: viletay.store
+
+---
+apiVersion: publicdns.crossplane.io/v1alpha1
+kind: Zone
+metadata:
+  annotations:
+    meta.upbound.io/example-id: publicdns/v1alpha1/zone
+  labels:
+    testing.upbound.io/example-name: example-viletay-store
+  name: example-zone
+spec:
+  forProvider:
+    zone: example.viletay.store
+    adminEmail: viletay@viletay.com
+    ttl: 60
+
+
