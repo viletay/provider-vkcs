@@ -7,6 +7,7 @@ package config
 import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
+	"github.com/viletay/provider-vkcs/config/networking"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 	"github.com/viletay/provider-vkcs/config/images"
@@ -38,6 +39,7 @@ func GetProvider() *ujconfig.Provider {
 		// add custom config functions
 		publicdns.Configure,
 		images.Configure,
+		networking.Configure,
 	} {
 		configure(pc)
 	}
