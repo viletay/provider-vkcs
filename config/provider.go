@@ -10,6 +10,7 @@ import (
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 	"github.com/viletay/provider-vkcs/config/images"
+	"github.com/viletay/provider-vkcs/config/networking"
 	"github.com/viletay/provider-vkcs/config/publicdns"
 )
 
@@ -38,6 +39,7 @@ func GetProvider() *ujconfig.Provider {
 		// add custom config functions
 		publicdns.Configure,
 		images.Configure,
+		networking.Configure,
 	} {
 		configure(pc)
 	}

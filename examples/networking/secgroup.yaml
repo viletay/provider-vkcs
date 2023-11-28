@@ -1,0 +1,32 @@
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Secgroup
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/secgroup
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    description: Example secgroup
+    name: example
+    deleteDefaultRules: true
+    tags:
+      - example
+      - secgroup
+
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Secgroup
+metadata:
+  annotations:
+    meta.upbound.io/example-id: images/v1alpha1/secgroup
+    crossplane.io/external-name: e884a489-5aa9-4cff-bcfd-605f5115cf9b
+  labels:
+    testing.upbound.io/example-name: imported-secgroup
+  name: imported-secgroup
+spec:
+  managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
+  forProvider: {}

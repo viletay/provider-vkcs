@@ -10,6 +10,7 @@ metadata:
   name: imported-example-zone
 spec:
   managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
   forProvider: {}
 
 ---

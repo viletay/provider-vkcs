@@ -1,0 +1,51 @@
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: SecgroupRule
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/secgrouprule
+  labels:
+    testing.upbound.io/example-name: example-egress
+  name: example-egress
+spec:
+  forProvider:
+    description: Example Secgroup Rule Egress
+    direction: egress
+    ethertype: IPv4
+    securityGroupIdRef:
+      name: example
+
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: SecgroupRule
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/secgrouprule
+  labels:
+    testing.upbound.io/example-name: example-ingress
+  name: example-ingress
+spec:
+  forProvider:
+    description: Example Secgroup Rule Ingress
+    direction: ingress
+    ethertype: IPv4
+    protocol: tcp
+    portRangeMin: 5432
+    portRangeMax: 5432
+    securityGroupIdRef:
+      name: imported-secgroup
+
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: SecgroupRule
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/secgrouprule
+    crossplane.io/external-name: 5b41ad41-a4d6-40d7-820d-0d298605f501
+  labels:
+    testing.upbound.io/example-name: imported-secgroup-rule
+  name: imported-secgroup-rule
+spec:
+  managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
+  forProvider: {}

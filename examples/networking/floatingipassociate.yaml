@@ -1,0 +1,14 @@
+apiVersion: networking.crossplane.io/v1alpha1
+kind: FloatingipAssociate
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/floatingipassociate
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    floatingIpRef:
+      name: example
+    portIdRef:
+      name: example

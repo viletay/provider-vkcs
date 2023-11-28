@@ -1,0 +1,15 @@
+apiVersion: networking.crossplane.io/v1alpha1
+kind: PortSecgroupAssociate
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/portsecgroupassociate
+  labels:
+    testing.upbound.io/example-name: append_secgroups
+  name: append-secgroups
+spec:
+  forProvider:
+    portIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: persistent_etcd
+    securityGroupIdsRefs:
+    - name: etcd

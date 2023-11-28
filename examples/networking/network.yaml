@@ -1,0 +1,31 @@
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Network
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/network
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    description: Example network
+    name: example
+    tags:
+      - example
+      - network
+
+---
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Network
+metadata:
+  annotations:
+    meta.upbound.io/example-id: images/v1alpha1/network
+    crossplane.io/external-name: 298117ae-3fa4-4109-9e08-8be5602be5a2
+  labels:
+    testing.upbound.io/example-name: imported-network
+  name: imported-network
+spec:
+  managementPolicies: ["Observe"]
+  deletionPolicy: Orphan
+  forProvider: {}

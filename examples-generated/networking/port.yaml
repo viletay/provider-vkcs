@@ -1,0 +1,23 @@
+apiVersion: networking.crossplane.io/v1alpha1
+kind: Port
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/port
+  labels:
+    testing.upbound.io/example-name: persistent_etcd
+  name: persistent-etcd
+spec:
+  forProvider:
+    fixedIp:
+    - subnetIdSelector:
+        matchLabels:
+          testing.upbound.io/example-name: db
+    name: persistent-etcd-tf-example
+    networkIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: db
+    securityGroupIdsRefs:
+    - name: etcd
+    tags:
+    - tf-example
+    - etcd

@@ -1,0 +1,15 @@
+apiVersion: networking.crossplane.io/v1alpha1
+kind: RouterRoute
+metadata:
+  annotations:
+    meta.upbound.io/example-id: networking/v1alpha1/routerroute
+  labels:
+    testing.upbound.io/example-name: compute_gateway
+  name: compute-gateway
+spec:
+  forProvider:
+    destinationCidr: 10.10.0.0/23
+    nextHop: ${vkcs_compute_instance.gateway.access_ip_v4}
+    routerIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: router
