@@ -200,6 +200,32 @@ func (mg *RouterInterface) ResolveReferences(ctx context.Context, c client.Reade
 	return nil
 }
 
+// ResolveReferences of this RouterRoute.
+func (mg *RouterRoute) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPIResolver(c, mg)
+
+	var rsp reference.ResolutionResponse
+	var err error
+
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.RouterID),
+		Extract:      reference.ExternalName(),
+		Reference:    mg.Spec.ForProvider.RouterIDRef,
+		Selector:     mg.Spec.ForProvider.RouterIDSelector,
+		To: reference.To{
+			List:    &RouterList{},
+			Managed: &Router{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.RouterID")
+	}
+	mg.Spec.ForProvider.RouterID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.RouterIDRef = rsp.ResolvedReference
+
+	return nil
+}
+
 // ResolveReferences of this SecgroupRule.
 func (mg *SecgroupRule) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)
