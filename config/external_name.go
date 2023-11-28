@@ -23,6 +23,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vkcs_networking_router_interface":        config.IdentifierFromProvider,
 	"vkcs_networking_router_route":            config.IdentifierFromProvider,
 	"vkcs_networking_floatingip":              config.IdentifierFromProvider,
+	"vkcs_networking_floatingip_associate":    config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

@@ -11,6 +11,7 @@ import (
 
 	image "github.com/viletay/provider-vkcs/internal/controller/images/image"
 	floatingip "github.com/viletay/provider-vkcs/internal/controller/networking/floatingip"
+	floatingipassociate "github.com/viletay/provider-vkcs/internal/controller/networking/floatingipassociate"
 	network "github.com/viletay/provider-vkcs/internal/controller/networking/network"
 	port "github.com/viletay/provider-vkcs/internal/controller/networking/port"
 	portsecgroupassociate "github.com/viletay/provider-vkcs/internal/controller/networking/portsecgroupassociate"
@@ -32,6 +33,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		image.Setup,
 		floatingip.Setup,
+		floatingipassociate.Setup,
 		network.Setup,
 		port.Setup,
 		portsecgroupassociate.Setup,

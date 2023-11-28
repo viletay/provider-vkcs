@@ -88,6 +88,48 @@ func (mg *Floatingip) ResolveReferences(ctx context.Context, c client.Reader) er
 	return nil
 }
 
+// ResolveReferences of this FloatingipAssociate.
+func (mg *FloatingipAssociate) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPIResolver(c, mg)
+
+	var rsp reference.ResolutionResponse
+	var err error
+
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.FloatingIP),
+		Extract:      networking.ExtractSpecAddress(),
+		Reference:    mg.Spec.ForProvider.FloatingIPRef,
+		Selector:     mg.Spec.ForProvider.FloatingIPSelector,
+		To: reference.To{
+			List:    &FloatingipList{},
+			Managed: &Floatingip{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.FloatingIP")
+	}
+	mg.Spec.ForProvider.FloatingIP = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.FloatingIPRef = rsp.ResolvedReference
+
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.PortID),
+		Extract:      reference.ExternalName(),
+		Reference:    mg.Spec.ForProvider.PortIDRef,
+		Selector:     mg.Spec.ForProvider.PortIDSelector,
+		To: reference.To{
+			List:    &PortList{},
+			Managed: &Port{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.PortID")
+	}
+	mg.Spec.ForProvider.PortID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.PortIDRef = rsp.ResolvedReference
+
+	return nil
+}
+
 // ResolveReferences of this Port.
 func (mg *Port) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)
