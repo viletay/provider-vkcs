@@ -1,28 +1,26 @@
 ---
 apiVersion: networking.crossplane.io/v1alpha1
-kind: Router
+kind: RouterInterface
 metadata:
   annotations:
-    meta.upbound.io/example-id: networking/v1alpha1/router
+    meta.upbound.io/example-id: networking/v1alpha1/routerinterface
   labels:
     testing.upbound.io/example-name: example
   name: example
 spec:
   forProvider:
-    name: example
-    description: Example Router
-    externalNetworkIdRef:
-      name: imported-network
-    tags:
-    - example
-    - router
+    routerIdRef:
+      name: example
+    portIdRef:
+      name: example
+    sdn: neutron
 
 ---
 apiVersion: networking.crossplane.io/v1alpha1
-kind: Router
+kind: RouterInterface
 metadata:
   annotations:
-    meta.upbound.io/example-id: networking/v1alpha1/router
+    meta.upbound.io/example-id: networking/v1alpha1/routerinterface
     crossplane.io/external-name: c85bc516-9e6b-4f0a-a291-ed33662374ba
   labels:
     testing.upbound.io/example-name: imported-example

@@ -60,4 +60,16 @@ func Configure(p *ujconfig.Provider) {
 			Type: "Network",
 		}
 	})
+	p.AddResourceConfigurator("vkcs_networking_router_interface", func(r *ujconfig.Resource) {
+		r.ExternalName = ujconfig.IdentifierFromProvider
+		r.References["router_id"] = ujconfig.Reference{
+			Type: "Router",
+		}
+		r.References["port_id"] = ujconfig.Reference{
+			Type: "Port",
+		}
+		r.References["subnet_id"] = ujconfig.Reference{
+			Type: "Subnet",
+		}
+	})
 }
