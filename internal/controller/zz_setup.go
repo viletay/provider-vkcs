@@ -10,6 +10,7 @@ import (
 	"github.com/crossplane/upjet/pkg/controller"
 
 	image "github.com/viletay/provider-vkcs/internal/controller/images/image"
+	floatingip "github.com/viletay/provider-vkcs/internal/controller/networking/floatingip"
 	network "github.com/viletay/provider-vkcs/internal/controller/networking/network"
 	port "github.com/viletay/provider-vkcs/internal/controller/networking/port"
 	portsecgroupassociate "github.com/viletay/provider-vkcs/internal/controller/networking/portsecgroupassociate"
@@ -30,6 +31,7 @@ import (
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		image.Setup,
+		floatingip.Setup,
 		network.Setup,
 		port.Setup,
 		portsecgroupassociate.Setup,

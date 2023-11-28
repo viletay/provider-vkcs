@@ -1,7 +1,10 @@
 package networking
 
 import (
+	xpref "github.com/crossplane/crossplane-runtime/pkg/reference"
+	xpresource "github.com/crossplane/crossplane-runtime/pkg/resource"
 	ujconfig "github.com/crossplane/upjet/pkg/config"
+	"github.com/crossplane/upjet/pkg/resource"
 )
 
 // Configure configures the null group
@@ -78,4 +81,40 @@ func Configure(p *ujconfig.Provider) {
 			Type: "Router",
 		}
 	})
+	p.AddResourceConfigurator("vkcs_networking_floatingip", func(r *ujconfig.Resource) {
+		r.ExternalName = ujconfig.IdentifierFromProvider
+		r.References["pool"] = ujconfig.Reference{
+			Type:      "Network",
+			Extractor: "github.com/viletay/provider-vkcs/config/networking.ExtractSpecName()",
+		}
+		r.References["port_id"] = ujconfig.Reference{
+			Type: "Port",
+		}
+		r.References["subnet_id"] = ujconfig.Reference{
+			Type: "Subnet",
+		}
+		r.References["subnet_ids"] = ujconfig.Reference{
+			Type: "Subnet",
+		}
+	})
+}
+
+// ExtractSpecName extracts the value of `spec.forProvider.name`
+// from a Terraformed resource. If mr is not a Terraformed
+// resource, returns an empty string.
+func ExtractSpecName() xpref.ExtractValueFn {
+	return func(mr xpresource.Managed) string {
+		tr, ok := mr.(resource.Terraformed)
+		if !ok {
+			return ""
+		}
+		o, err := tr.GetObservation()
+		if err != nil {
+			return ""
+		}
+		if k := o["name"]; k != nil {
+			return k.(string)
+		}
+		return ""
+	}
 }
