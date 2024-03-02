@@ -9,7 +9,7 @@ export TERRAFORM_VERSION ?= 1.6.4
 export HASHICORP_RELEASES_URL ?= https://releases.hashicorp.com
 export TERRAFORM_PROVIDER_SOURCE ?= vk-cs/vkcs
 export TERRAFORM_PROVIDER_REPO ?= https://github.com/vk-cs/terraform-provider-vkcs
-export TERRAFORM_PROVIDER_VERSION ?= 0.5.3
+export TERRAFORM_PROVIDER_VERSION ?= 0.7.0
 export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-vkcs
 export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= $(TERRAFORM_PROVIDER_REPO)/releases/download/v$(TERRAFORM_PROVIDER_VERSION)
 export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-vkcs
@@ -125,8 +125,8 @@ pull-docs:
 	fi
 	@git -C "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" sparse-checkout set "$(TERRAFORM_DOCS_PATH)"
 	# Provider documentation fix 0.5.2
-	@echo "Fix: $(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)/$(TERRAFORM_DOCS_PATH)/networking_floatingip.md"
-	@sed -i 's/subnet_ids = \[<subnet1_id>, <subnet2_id>, <subnet3_id>\]/subnet_ids = \["<subnet1_id>", "<subnet2_id>", "<subnet3_id>"\]/g' .work/vk-cs/vkcs/docs/resources/networking_floatingip.md
+#	@echo "Fix: $(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)/$(TERRAFORM_DOCS_PATH)/networking_floatingip.md"
+#	@#sed -i 's/subnet_ids = \[<subnet1_id>, <subnet2_id>, <subnet3_id>\]/subnet_ids = \["<subnet1_id>", "<subnet2_id>", "<subnet3_id>"\]/g' .work/vk-cs/vkcs/docs/resources/networking_floatingip.md
 generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
 
 .PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
