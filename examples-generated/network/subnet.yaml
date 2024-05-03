@@ -1,0 +1,15 @@
+apiVersion: network.vkcs.upbound.io/v1alpha1
+kind: Subnet
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/subnet
+  labels:
+    testing.upbound.io/example-name: app
+  name: app
+spec:
+  forProvider:
+    cidr: 192.168.199.0/24
+    name: app-tf-example
+    networkIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: app

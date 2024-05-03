@@ -1,0 +1,28 @@
+apiVersion: compute.vkcs.upbound.io/v1alpha1
+kind: Instance
+metadata:
+  annotations:
+    meta.upbound.io/example-id: compute/v1alpha1/instance
+  labels:
+    testing.upbound.io/example-name: basic
+  name: basic
+spec:
+  forProvider:
+    availabilityZone: GZ1
+    blockDevice:
+    - deleteOnTermination: true
+      destinationType: volume
+      sourceType: image
+      uuidSelector:
+        matchLabels:
+          testing.upbound.io/example-name: vkcs_images_image
+      volumeSize: 10
+      volumeType: ceph-ssd
+    flavorName: Basic-1-2-20
+    name: basic-tf-example
+    network:
+    - uuidSelector:
+        matchLabels:
+          testing.upbound.io/example-name: app
+    securityGroups:
+    - ${vkcs_networking_secgroup.admin.name}

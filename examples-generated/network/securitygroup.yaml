@@ -1,0 +1,12 @@
+apiVersion: network.vkcs.upbound.io/v1alpha1
+kind: SecurityGroup
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/securitygroup
+  labels:
+    testing.upbound.io/example-name: etcd
+  name: etcd
+spec:
+  forProvider:
+    description: etcd service
+    name: etcd-tf-example

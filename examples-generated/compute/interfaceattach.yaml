@@ -1,0 +1,16 @@
+apiVersion: compute.vkcs.upbound.io/v1alpha1
+kind: InterfaceAttach
+metadata:
+  annotations:
+    meta.upbound.io/example-id: compute/v1alpha1/interfaceattach
+  labels:
+    testing.upbound.io/example-name: etcd
+  name: etcd
+spec:
+  forProvider:
+    instanceIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: basic
+    portIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: persistent_etcd

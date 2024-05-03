@@ -1,0 +1,17 @@
+apiVersion: disk.vkcs.upbound.io/v1alpha1
+kind: Snapshot
+metadata:
+  annotations:
+    meta.upbound.io/example-id: disk/v1alpha1/snapshot
+  labels:
+    testing.upbound.io/example-name: recent_snapshot
+  name: recent-snapshot
+spec:
+  forProvider:
+    description: test snapshot
+    metadata:
+      foo: bar
+    name: snapshot-tf-example
+    volumeIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: data

@@ -1,0 +1,27 @@
+apiVersion: disk.vkcs.upbound.io/v1alpha1
+kind: Image
+metadata:
+  annotations:
+    meta.upbound.io/example-id: disk/v1alpha1/image
+  labels:
+    testing.upbound.io/example-name: eurolinux9
+  name: eurolinux9
+spec:
+  forProvider:
+    compressionFormat: xz
+    containerFormat: bare
+    diskFormat: raw
+    imageSourceUrl: https://fbi.cdn.euro-linux.com/images/EL-9-cloudgeneric-2023-03-19.raw.xz
+    minDiskGb: 10
+    minRamMb: 1536
+    name: eurolinux9-tf-example
+    properties:
+      hw_qemu_guest_agent: "yes"
+      mcs_name: EuroLinux 9
+      mcs_os_distro: eurolinux
+      mcs_os_version: "9"
+      os_admin_user: root
+      os_require_quiesce: "yes"
+      os_type: linux
+    tags:
+    - tf-example

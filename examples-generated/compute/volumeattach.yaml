@@ -1,0 +1,16 @@
+apiVersion: compute.vkcs.upbound.io/v1alpha1
+kind: VolumeAttach
+metadata:
+  annotations:
+    meta.upbound.io/example-id: compute/v1alpha1/volumeattach
+  labels:
+    testing.upbound.io/example-name: data
+  name: data
+spec:
+  forProvider:
+    instanceIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: basic
+    volumeIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: data

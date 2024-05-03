@@ -24,13 +24,11 @@ kind: Record
 metadata:
   annotations:
     meta.upbound.io/example-id: publicdns/v1alpha1/record
-    crossplane.io/external-name: 510bd063-6d1f-48a2-a41e-8f20a638b07d/a/b0851cf8-dbba-4c7e-a434-4f2bf3297aef
-  labels:
-    testing.upbound.io/example-name: imported-example-record
+    crossplane.io/external-name: c8a79442-6872-49af-b7f0-3957e612820d/txt/16bd382f-6b5a-467b-8d29-9e4b6020b779
   name: imported-example-record
 spec:
-  managementPolicies: ["Create", "Observe"]
-  deletionPolicy: Orphan
+#  managementPolicies: ["Create", "Observe"]
+#  deletionPolicy: Orphan
   forProvider:
     type: A
     zoneIdRef:
