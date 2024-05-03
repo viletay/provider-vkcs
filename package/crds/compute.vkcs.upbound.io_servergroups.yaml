@@ -12,8 +12,8 @@ spec:
     - crossplane
     - managed
     - vkcs
-    kind: Servergroup
-    listKind: ServergroupList
+    kind: ServerGroup
+    listKind: ServerGroupList
     plural: servergroups
     singular: servergroup
   scope: Cluster
@@ -34,7 +34,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Servergroup is the Schema for the Servergroups API. Manages a
+        description: ServerGroup is the Schema for the ServerGroups API. Manages a
           Server Group resource within VKCS.
         properties:
           apiVersion:
@@ -50,7 +50,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ServergroupSpec defines the desired state of Servergroup
+            description: ServerGroupSpec defines the desired state of ServerGroup
             properties:
               deletionPolicy:
                 default: Delete
@@ -305,7 +305,7 @@ spec:
                 || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
                 || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: ServergroupStatus defines the observed state of Servergroup.
+            description: ServerGroupStatus defines the observed state of ServerGroup.
             properties:
               atProvider:
                 properties:

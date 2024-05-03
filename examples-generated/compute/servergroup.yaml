@@ -1,5 +1,5 @@
 apiVersion: compute.vkcs.upbound.io/v1alpha1
-kind: Servergroup
+kind: ServerGroup
 metadata:
   annotations:
     meta.upbound.io/example-id: compute/v1alpha1/servergroup

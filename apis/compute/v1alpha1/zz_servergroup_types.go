@@ -17,7 +17,7 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
-type ServergroupInitParameters struct {
+type ServerGroupInitParameters struct {
 
 	// required string →  A unique name for the server group. Changing this creates a new server group.
 	// A unique name for the server group. Changing this creates a new server group.
@@ -36,7 +36,7 @@ type ServergroupInitParameters struct {
 	ValueSpecs map[string]*string `json:"valueSpecs,omitempty" tf:"value_specs,omitempty"`
 }
 
-type ServergroupObservation struct {
+type ServerGroupObservation struct {
 
 	// string →  ID of the resource.
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
@@ -62,7 +62,7 @@ type ServergroupObservation struct {
 	ValueSpecs map[string]*string `json:"valueSpecs,omitempty" tf:"value_specs,omitempty"`
 }
 
-type ServergroupParameters struct {
+type ServerGroupParameters struct {
 
 	// required string →  A unique name for the server group. Changing this creates a new server group.
 	// A unique name for the server group. Changing this creates a new server group.
@@ -85,10 +85,10 @@ type ServergroupParameters struct {
 	ValueSpecs map[string]*string `json:"valueSpecs,omitempty" tf:"value_specs,omitempty"`
 }
 
-// ServergroupSpec defines the desired state of Servergroup
-type ServergroupSpec struct {
+// ServerGroupSpec defines the desired state of ServerGroup
+type ServerGroupSpec struct {
 	v1.ResourceSpec `json:",inline"`
-	ForProvider     ServergroupParameters `json:"forProvider"`
+	ForProvider     ServerGroupParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -99,49 +99,49 @@ type ServergroupSpec struct {
 	// required on creation, but we do not desire to update them after creation,
 	// for example because of an external controller is managing them, like an
 	// autoscaler.
-	InitProvider ServergroupInitParameters `json:"initProvider,omitempty"`
+	InitProvider ServerGroupInitParameters `json:"initProvider,omitempty"`
 }
 
-// ServergroupStatus defines the observed state of Servergroup.
-type ServergroupStatus struct {
+// ServerGroupStatus defines the observed state of ServerGroup.
+type ServerGroupStatus struct {
 	v1.ResourceStatus `json:",inline"`
-	AtProvider        ServergroupObservation `json:"atProvider,omitempty"`
+	AtProvider        ServerGroupObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// Servergroup is the Schema for the Servergroups API. Manages a Server Group resource within VKCS.
+// ServerGroup is the Schema for the ServerGroups API. Manages a Server Group resource within VKCS.
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vkcs}
-type Servergroup struct {
+type ServerGroup struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
-	Spec   ServergroupSpec   `json:"spec"`
-	Status ServergroupStatus `json:"status,omitempty"`
+	Spec   ServerGroupSpec   `json:"spec"`
+	Status ServerGroupStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// ServergroupList contains a list of Servergroups
-type ServergroupList struct {
+// ServerGroupList contains a list of ServerGroups
+type ServerGroupList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Servergroup `json:"items"`
+	Items           []ServerGroup `json:"items"`
 }
 
 // Repository type metadata.
 var (
-	Servergroup_Kind             = "Servergroup"
-	Servergroup_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: Servergroup_Kind}.String()
-	Servergroup_KindAPIVersion   = Servergroup_Kind + "." + CRDGroupVersion.String()
-	Servergroup_GroupVersionKind = CRDGroupVersion.WithKind(Servergroup_Kind)
+	ServerGroup_Kind             = "ServerGroup"
+	ServerGroup_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: ServerGroup_Kind}.String()
+	ServerGroup_KindAPIVersion   = ServerGroup_Kind + "." + CRDGroupVersion.String()
+	ServerGroup_GroupVersionKind = CRDGroupVersion.WithKind(ServerGroup_Kind)
 )
 
 func init() {
-	SchemeBuilder.Register(&Servergroup{}, &ServergroupList{})
+	SchemeBuilder.Register(&ServerGroup{}, &ServerGroupList{})
 }
