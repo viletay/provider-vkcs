@@ -24,6 +24,14 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vkcs_networking_router_route":            config.IdentifierFromProvider,
 	"vkcs_networking_floatingip":              config.IdentifierFromProvider,
 	"vkcs_networking_floatingip_associate":    config.IdentifierFromProvider,
+	"vkcs_blockstorage_volume":                config.IdentifierFromProvider,
+	"vkcs_blockstorage_snapshot":              config.IdentifierFromProvider,
+	"vkcs_compute_keypair":                    config.IdentifierFromProvider,
+	"vkcs_compute_instance":                   config.IdentifierFromProvider,
+	"vkcs_compute_volume_attach":              config.IdentifierFromProvider,
+	"vkcs_compute_interface_attach":           config.IdentifierFromProvider,
+	"vkcs_compute_floatingip_associate":       config.IdentifierFromProvider,
+	"vkcs_compute_servergroup":                config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

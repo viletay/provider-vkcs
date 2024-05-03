@@ -1,0 +1,12 @@
+apiVersion: compute.vkcs.upbound.io/v1alpha1
+kind: Keypair
+metadata:
+  annotations:
+    meta.upbound.io/example-id: compute/v1alpha1/keypair
+  labels:
+    testing.upbound.io/example-name: existing-key
+  name: existing-key
+spec:
+  forProvider:
+    name: existing-key-tf-example
+    publicKey: ${file("${path.module}/public_key.key")}

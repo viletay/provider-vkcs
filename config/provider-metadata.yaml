@@ -56,7 +56,7 @@ resources:
                   },
                   "incremental_backup": false,
                   "instance_ids": [
-                    "${vkcs_db_instance.basic.id}"
+                    "${vkcs_db_instance.mysql.id}"
                   ],
                   "name": "backup-plan-tf-example",
                   "provider_name": "dbaas",
@@ -90,28 +90,18 @@ resources:
         name: vkcs_blockstorage_snapshot
         title: vkcs_blockstorage_snapshot
         examples:
-            - name: snapshot
+            - name: recent_snapshot
               manifest: |-
                 {
                   "description": "test snapshot",
                   "metadata": {
                     "foo": "bar"
                   },
-                  "name": "snapshot",
-                  "volume_id": "${vkcs_blockstorage_volume.volume.id}"
+                  "name": "snapshot-tf-example",
+                  "volume_id": "${vkcs_blockstorage_volume.data.id}"
                 }
-              dependencies:
-                vkcs_blockstorage_volume.volume: |-
-                    {
-                      "availability_zone": "GZ1",
-                      "description": "test volume",
-                      "metadata": {
-                        "foo": "bar"
-                      },
-                      "name": "volume",
-                      "size": 1,
-                      "volume_type": "ceph-ssd"
-                    }
+              references:
+                volume_id: vkcs_blockstorage_volume.data.id
         argumentDocs:
             description: optional string →  The description of the volume.
             force: optional boolean →  Allows or disallows snapshot of a volume when the volume is attached to an instance.
@@ -128,7 +118,7 @@ resources:
         name: vkcs_blockstorage_volume
         title: vkcs_blockstorage_volume
         examples:
-            - name: volume
+            - name: data
               manifest: |-
                 {
                   "availability_zone": "GZ1",
@@ -136,7 +126,7 @@ resources:
                   "metadata": {
                     "foo": "bar"
                   },
-                  "name": "volume",
+                  "name": "data-tf-example",
                   "size": 1,
                   "volume_type": "ceph-ssd"
                 }
@@ -463,156 +453,25 @@ resources:
         name: vkcs_compute_interface_attach
         title: vkcs_compute_interface_attach
         examples:
-            - name: ai_1
+            - name: etcd
               manifest: |-
                 {
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
-                  "network_id": "${vkcs_networking_port.network_1.id}"
+                  "instance_id": "${vkcs_compute_instance.basic.id}",
+                  "port_id": "${vkcs_networking_port.persistent_etcd.id}"
                 }
-              dependencies:
-                vkcs_compute_instance.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-            - name: ai_1
+              references:
+                instance_id: vkcs_compute_instance.basic.id
+                port_id: vkcs_networking_port.persistent_etcd.id
+            - name: db
               manifest: |-
                 {
-                  "fixed_ip": "10.0.10.10",
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
-                  "network_id": "${vkcs_networking_port.network_1.id}"
+                  "instance_id": "${vkcs_compute_instance.basic.id}",
+                  "network_id": "${vkcs_networking_network.db.id}"
                 }
-              dependencies:
-                vkcs_compute_instance.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-            - name: ai_1
-              manifest: |-
-                {
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
-                  "port_id": "${vkcs_networking_port.port_1.id}"
-                }
-              dependencies:
-                vkcs_compute_instance.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_port.port_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "port_1",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
-            - name: attachments
-              manifest: |-
-                {
-                  "count": 2,
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
-                  "port_id": "${vkcs_networking_port.ports.*.id[count.index]}"
-                }
-              dependencies:
-                vkcs_compute_instance.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_port.ports: |-
-                    {
-                      "admin_state_up": "true",
-                      "count": 2,
-                      "name": "${format(\"port-%02d\", count.index + 1)}",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
-            - name: ai_1
-              manifest: |-
-                {
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
-                  "port_id": "${vkcs_networking_port.ports.*.id[0]}"
-                }
-              dependencies:
-                vkcs_compute_instance_v2.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_port.ports: |-
-                    {
-                      "admin_state_up": "true",
-                      "count": 2,
-                      "name": "${format(\"port-%02d\", count.index + 1)}",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
-            - name: ai_2
-              manifest: |-
-                {
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
-                  "port_id": "${vkcs_networking_port.ports.*.id[1]}"
-                }
-              dependencies:
-                vkcs_compute_instance_v2.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_port.ports: |-
-                    {
-                      "admin_state_up": "true",
-                      "count": 2,
-                      "name": "${format(\"port-%02d\", count.index + 1)}",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
-        argumentDocs:
-            fixed_ip: 'optional string →  An IP address to assosciate with the port. Note: This option cannot be used with port_id. You must specify a network_id. The IP address must lie in a range on the supplied network.'
-            id: string →  ID of the resource.
-            instance_id: required string →  The ID of the Instance to attach the Port or Network to.
-            network_id: 'optional string →  The ID of the Network to attach to an Instance. A port will be created automatically. Note: This option and port_id are mutually exclusive.'
-            port_id: 'optional string →  The ID of the Port to attach to an Instance. Note: This option and network_id are mutually exclusive.'
-            region: optional string →  The region in which to create the interface attachment. If omitted, the region argument of the provider is used. Changing this creates a new attachment.
+              references:
+                instance_id: vkcs_compute_instance.basic.id
+                network_id: vkcs_networking_network.db.id
+        argumentDocs: {}
         importStatements:
             - terraform import vkcs_compute_interface_attach.ai_1 89c60255-9bd6-460c-822a-e2b959ede9d2/45670584-225f-46c3-b33e-6707b589b666
     vkcs_compute_keypair:
@@ -621,16 +480,16 @@ resources:
         name: vkcs_compute_keypair
         title: vkcs_compute_keypair
         examples:
-            - name: test-keypair
+            - name: existing-key
               manifest: |-
                 {
-                  "name": "my-keypair",
-                  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAjpC1hwiOCCmKEWxJ4qzTTsJbKzndLotBCz5PcwtUnflmU+gHJtWMZKpuEGVi29h0A/+ydKek1O18k10Ff+4tyFjiHDQAnOfgWf7+b1yK+qDip3X1C0UPMbwHlTfSGWLGZqd9LvEFx9k3h/M+VtMvwR1lJ9LUyTAImnNjWG7TaIPmui30HvM2UiFEmqkr4ijq45MyX2+fLIePLRIF61p4whjHAQYufqyno3BS48icQb4p6iVEZPo4AE2o9oIyQvj2mx4dk5Y8CgSETOZTYDOR3rU2fZTRDRgPJDH9FWvQjF5tA0p3d9CoWWd2s6GKKbfoUIi8R/Db1BSPJwkqB"
+                  "name": "existing-key-tf-example",
+                  "public_key": "${file(\"${path.module}/public_key.key\")}"
                 }
-            - name: keypair
+            - name: generated-key
               manifest: |-
                 {
-                  "name": "test-keypair"
+                  "name": "generated-key-tf-example"
                 }
         argumentDocs:
             fingerprint: string →  The fingerprint of the public key.
@@ -648,10 +507,10 @@ resources:
         name: vkcs_compute_servergroup
         title: vkcs_compute_servergroup
         examples:
-            - name: test-sg
+            - name: cusom_group
               manifest: |-
                 {
-                  "name": "my-sg",
+                  "name": "custom-group-tf-example",
                   "policies": [
                     "anti-affinity"
                   ]
@@ -675,89 +534,36 @@ resources:
         name: vkcs_compute_volume_attach
         title: vkcs_compute_volume_attach
         examples:
-            - name: va_1
+            - name: data
               manifest: |-
                 {
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
-                  "volume_id": "${vkcs_blockstorage_volume.volume_1.id}"
+                  "instance_id": "${vkcs_compute_instance.basic.id}",
+                  "volume_id": "${vkcs_blockstorage_volume.data.id}"
                 }
-              dependencies:
-                vkcs_blockstorage_volume.volume_1: |-
-                    {
-                      "name": "volume_1",
-                      "size": 1
-                    }
-                vkcs_compute_instance.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
-            - name: attachments
-              manifest: |-
-                {
-                  "count": 2,
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
-                  "volume_id": "${vkcs_blockstorage_volume.volumes.*.id[count.index]}"
-                }
-              dependencies:
-                vkcs_blockstorage_volume.volumes: |-
-                    {
-                      "count": 2,
-                      "name": "${format(\"vol-%02d\", count.index + 1)}",
-                      "size": 1
-                    }
-                vkcs_compute_instance.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
+              references:
+                instance_id: vkcs_compute_instance.basic.id
+                volume_id: vkcs_blockstorage_volume.data.id
             - name: attach_1
               manifest: |-
                 {
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
+                  "instance_id": "${vkcs_compute_instance.basic.id}",
                   "volume_id": "${vkcs_blockstorage_volume.volumes.0.id}"
                 }
-              dependencies:
-                vkcs_blockstorage_volume.volumes: |-
-                    {
-                      "count": 2,
-                      "name": "${format(\"vol-%02d\", count.index + 1)}",
-                      "size": 1
-                    }
-                vkcs_compute_instance.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
+              references:
+                instance_id: vkcs_compute_instance.basic.id
+                volume_id: vkcs_blockstorage_volume.volumes.0.id
             - name: attach_2
               manifest: |-
                 {
                   "depends_on": [
-                    "vkcs_compute_volume_attach.attach_1"
+                    "${vkcs_compute_volume_attach.attach_1}"
                   ],
-                  "instance_id": "${vkcs_compute_instance.instance_1.id}",
+                  "instance_id": "${vkcs_compute_instance.basic.id}",
                   "volume_id": "${vkcs_blockstorage_volume.volumes.1.id}"
                 }
-              dependencies:
-                vkcs_blockstorage_volume.volumes: |-
-                    {
-                      "count": 2,
-                      "name": "${format(\"vol-%02d\", count.index + 1)}",
-                      "size": 1
-                    }
-                vkcs_compute_instance.instance_1: |-
-                    {
-                      "name": "instance_1",
-                      "security_groups": [
-                        "default"
-                      ]
-                    }
+              references:
+                instance_id: vkcs_compute_instance.basic.id
+                volume_id: vkcs_blockstorage_volume.volumes.1.id
         argumentDocs:
             id: string →  ID of the resource.
             instance_id: required string →  The ID of the Instance to attach the Volume to.
@@ -771,51 +577,14 @@ resources:
         name: vkcs_db_backup
         title: vkcs_db_backup
         examples:
-            - name: db-backup
+            - name: mysql-backup
               manifest: |-
                 {
-                  "dbms_id": "${vkcs_db_instance.db-instance.id}",
-                  "name": "db-backup"
+                  "dbms_id": "${vkcs_db_instance.mysql.id}",
+                  "name": "mssql-backup"
                 }
               references:
-                dbms_id: vkcs_db_instance.db-instance.id
-              dependencies:
-                vkcs_db_instance.db-instance: |-
-                    {
-                      "availability_zone": "GZ1",
-                      "capabilities": [
-                        {
-                          "name": "node_exporter",
-                          "settings": {
-                            "listen_port": "9100"
-                          }
-                        }
-                      ],
-                      "datastore": [
-                        {
-                          "type": "mysql",
-                          "version": "5.7"
-                        }
-                      ],
-                      "depends_on": [
-                        "${vkcs_networking_router_interface.db}"
-                      ],
-                      "disk_autoexpand": [
-                        {
-                          "autoexpand": true,
-                          "max_disk_size": 1000
-                        }
-                      ],
-                      "flavor_id": "${data.vkcs_compute_flavor.db.id}",
-                      "name": "db-instance",
-                      "network": [
-                        {
-                          "uuid": "${vkcs_networking_network.db.id}"
-                        }
-                      ],
-                      "size": 8,
-                      "volume_type": "ceph-ssd"
-                    }
+                dbms_id: vkcs_db_instance.mysql.id
         argumentDocs:
             container_prefix: 'optional string →  Prefix of S3 bucket ([prefix] - [project_id]) to store backup data. Default: databasebackups'
             created: string →  Backup creation timestamp
@@ -841,7 +610,7 @@ resources:
         name: vkcs_db_cluster
         title: vkcs_db_cluster
         examples:
-            - name: db-cluster
+            - name: pg-cluster
               manifest: |-
                 {
                   "availability_zone": "GZ1",
@@ -856,8 +625,8 @@ resources:
                   "depends_on": [
                     "${vkcs_networking_router_interface.db}"
                   ],
-                  "flavor_id": "${data.vkcs_compute_flavor.db.id}",
-                  "name": "db-cluster",
+                  "flavor_id": "${data.vkcs_compute_flavor.basic.id}",
+                  "name": "pg-cluster",
                   "network": [
                     {
                       "uuid": "${vkcs_networking_network.db.id}"
@@ -867,7 +636,7 @@ resources:
                   "volume_type": "ceph-ssd"
                 }
               references:
-                flavor_id: data.vkcs_compute_flavor.db.id
+                flavor_id: data.vkcs_compute_flavor.basic.id
                 network.uuid: vkcs_networking_network.db.id
             - name: mydb-cluster
               manifest: |-
@@ -961,7 +730,7 @@ resources:
             start_minutes: required number →  Minutes part of timestamp of initial backup.
             subnet_id: optional string →  The id of the subnet. Changing this creates a new cluster.New since v0.1.15.
             target: optional string →  Used only for restoring from PITR backups. Timestamp of needed backup in format "2021-10-06 01:02:00". You can specify "latest" to use most recent backup.
-            type: required string →  Type of the datastore. Changing this creates a new cluster. Type of the datastore can either be "galera_mysql", "postgresql" or "tarantool".
+            type: 'required string →  Type of the datastore. Changing this creates a new cluster. Must be one of: galera_mysql, postgresql, tarantool, postgrespro_enterprise, postgrespro_enterprise_1c'
             uuid: 'optional string →  The id of the network. Changing this creates a new cluster. Note: Although this argument is marked as optional, it is actually required at the moment. Not setting a value for it may cause an error.'
             vendor_options: optional →  Map of additional vendor-specific options. Supported options are described below.New since v0.4.0.
             version: required string →  Version of the datastore. Changing this creates a new cluster.
@@ -977,7 +746,7 @@ resources:
         name: vkcs_db_cluster_with_shards
         title: vkcs_db_cluster_with_shards
         examples:
-            - name: db-cluster-with-shards
+            - name: clickhouse-cluster
               manifest: |-
                 {
                   "cloud_monitoring_enabled": true,
@@ -989,17 +758,17 @@ resources:
                   ],
                   "depends_on": [
                     "${vkcs_networking_router_interface.db}",
-                    "${vkcs_networking_secgroup.secgroup}"
+                    "${vkcs_networking_secgroup.admin}"
                   ],
-                  "name": "db-cluster-with-shards",
+                  "name": "clickhouse-cluster-with-shards",
                   "shard": [
                     {
                       "availability_zone": "GZ1",
-                      "flavor_id": "${data.vkcs_compute_flavor.db.id}",
+                      "flavor_id": "${data.vkcs_compute_flavor.basic.id}",
                       "network": [
                         {
                           "security_groups": [
-                            "${vkcs_networking_secgroup.secgroup.id}"
+                            "${vkcs_networking_secgroup.admin.id}"
                           ],
                           "uuid": "${vkcs_networking_network.db.id}"
                         }
@@ -1011,11 +780,11 @@ resources:
                     },
                     {
                       "availability_zone": "GZ1",
-                      "flavor_id": "${data.vkcs_compute_flavor.db.id}",
+                      "flavor_id": "${data.vkcs_compute_flavor.basic.id}",
                       "network": [
                         {
                           "security_groups": [
-                            "${vkcs_networking_secgroup.secgroup.id}"
+                            "${vkcs_networking_secgroup.admin.id}"
                           ],
                           "uuid": "${vkcs_networking_network.db.id}"
                         }
@@ -1028,7 +797,7 @@ resources:
                   ]
                 }
               references:
-                shard.flavor_id: data.vkcs_compute_flavor.db.id
+                shard.flavor_id: data.vkcs_compute_flavor.basic.id
                 shard.network.uuid: vkcs_networking_network.db.id
             - name: db-cluster-with-shards
               manifest: |-
@@ -1102,7 +871,7 @@ resources:
             shrink_options: optional string →  Used only for shrinking cluster. List of IDs of instances that should remain after shrink. If no options are supplied, shrink operation will choose first non-leader instance to delete.
             size: required number →  The number of instances in the cluster shard.
             subnet_id: optional string →  The id of the subnet. Changing this creates a new cluster.New since v0.1.15.
-            type: required string →  Type of the datastore. Changing this creates a new cluster. Type of the datastore must be "clickhouse".
+            type: 'required string →  Type of the datastore. Changing this creates a new cluster. Must be one of: clickhouse'
             uuid: 'optional string →  The id of the network. Changing this creates a new cluster. Note: Although this argument is marked as optional, it is actually required at the moment. Not setting a value for it may cause an error.'
             vendor_options: optional →  Map of additional vendor-specific options. Supported options are described below.New since v0.4.0.
             version: required string →  Version of the datastore. Changing this creates a new cluster.
@@ -1118,7 +887,7 @@ resources:
         name: vkcs_db_config_group
         title: vkcs_db_config_group
         examples:
-            - name: db-config-group
+            - name: mysql-80
               manifest: |-
                 {
                   "datastore": [
@@ -1136,30 +905,6 @@ resources:
                     "innodb_segment_reserve_factor": "0.53"
                   }
                 }
-              dependencies:
-                vkcs_db_instance.db-instance: |-
-                    {
-                      "availability_zone": "GZ1",
-                      "configuration_id": "${vkcs_db_config_group.db-config-group.id}",
-                      "datastore": [
-                        {
-                          "type": "mysql",
-                          "version": "8.0"
-                        }
-                      ],
-                      "depends_on": [
-                        "${vkcs_networking_router_interface.db}"
-                      ],
-                      "flavor_id": "${data.vkcs_compute_flavor.db.id}",
-                      "name": "db-instance",
-                      "network": [
-                        {
-                          "uuid": "${vkcs_networking_network.db.id}"
-                        }
-                      ],
-                      "size": 8,
-                      "volume_type": "ceph-ssd"
-                    }
         argumentDocs:
             created: string →  Timestamp of config group's creation
             datastore: required →  Object that represents datastore of the config group. Changing this creates a new config group.
@@ -1178,46 +923,25 @@ resources:
         name: vkcs_db_database
         title: vkcs_db_database
         examples:
-            - name: db-database
+            - name: mysql-db
               manifest: |-
                 {
                   "charset": "utf8",
                   "collate": "utf8_general_ci",
-                  "dbms_id": "${vkcs_db_instance.db-instance.id}",
+                  "dbms_id": "${vkcs_db_instance.mysql.id}",
                   "name": "testdb"
                 }
               references:
-                dbms_id: vkcs_db_instance.db-instance.id
-              dependencies:
-                vkcs_db_instance.db-instance: |-
-                    {
-                      "availability_zone": "GZ1",
-                      "datastore": [
-                        {
-                          "type": "mysql",
-                          "version": "5.7"
-                        }
-                      ],
-                      "depends_on": [
-                        "${vkcs_networking_router_interface.db}"
-                      ],
-                      "flavor_id": "${data.vkcs_compute_flavor.db.id}",
-                      "name": "db-instance",
-                      "network": [
-                        {
-                          "uuid": "${vkcs_networking_network.db.id}"
-                        }
-                      ],
-                      "size": 8,
-                      "volume_type": "ceph-ssd"
-                    }
+                dbms_id: vkcs_db_instance.mysql.id
         argumentDocs:
             charset: optional string →  Type of charset used for the database. Changing this creates a new database.
             collate: optional string →  Collate option of the database.  Changing this creates a new database.
             dbms_id: required string →  ID of the instance or cluster that database is created for.
             dbms_type: string →  Type of dbms for the database, can be "instance" or "cluster".
+            force_deletion: optional boolean →  Whether to try to force delete the database. Some datastores restricts regular database deletion in some circumstances but provides force deletion for that cases.
             id: string →  ID of the resource.
             name: required string →  The name of the database. Changing this creates a new database.
+            vendor_options: optional →  New since v0.5.5.
         importStatements:
             - terraform import vkcs_db_database.mydb 67691f3e-a4d1-443e-b1e9-717f505cc458/mydbname
     vkcs_db_instance:
@@ -1226,7 +950,7 @@ resources:
         name: vkcs_db_instance
         title: vkcs_db_instance
         examples:
-            - name: basic
+            - name: mysql
               manifest: |-
                 {
                   "availability_zone": "GZ1",
@@ -1239,14 +963,15 @@ resources:
                     }
                   ],
                   "cloud_monitoring_enabled": true,
+                  "configuration_id": "${vkcs_db_config_group.mysql-80.id}",
                   "datastore": [
                     {
                       "type": "mysql",
-                      "version": "5.7"
+                      "version": "8.0"
                     }
                   ],
                   "depends_on": [
-                    "${vkcs_networking_router_interface.app}"
+                    "${vkcs_networking_router_interface.db}"
                   ],
                   "disk_autoexpand": [
                     {
@@ -1261,15 +986,16 @@ resources:
                       "security_groups": [
                         "${vkcs_networking_secgroup.admin.id}"
                       ],
-                      "uuid": "${vkcs_networking_network.app.id}"
+                      "uuid": "${vkcs_networking_network.db.id}"
                     }
                   ],
                   "size": 8,
                   "volume_type": "ceph-ssd"
                 }
               references:
+                configuration_id: vkcs_db_config_group.mysql-80.id
                 flavor_id: data.vkcs_compute_flavor.basic.id
-                network.uuid: vkcs_networking_network.app.id
+                network.uuid: vkcs_networking_network.db.id
             - name: db-instance
               manifest: |-
                 {
@@ -1379,7 +1105,7 @@ resources:
             network: optional →  Object that represents network of the instance. Changing this creates a new instance.
             port: optional deprecated string →  The port id of the network. Changing this creates a new instance. Deprecated This argument is deprecated, please do not use it.
             region: optional string →  Region to create resource in.
-            replica_of: optional string →  ID of the instance, that current instance is replica of.
+            replica_of: 'optional string →  ID of the instance, that current instance is replica of. Instance''s datastore must be one of: postgrespro_enterprise, mysql, postgresql, postgrespro_enterprise_1c'
             restart_confirmed: optional boolean →  Boolean to confirm autorestart of the instance if it is required to apply configuration group changes.
             restore_point: optional →  Object that represents backup to restore instance from.New since v0.1.4.
             root_enabled: optional boolean →  Indicates whether root user is enabled for the instance.
@@ -1406,48 +1132,18 @@ resources:
         name: vkcs_db_user
         title: vkcs_db_user
         examples:
-            - name: db-user
+            - name: mysql-user
               manifest: |-
                 {
                   "databases": [
-                    "${vkcs_db_database.db-database.name}"
+                    "${vkcs_db_database.mysql-db.name}"
                   ],
-                  "dbms_id": "${vkcs_db_instance.db-instance.id}",
+                  "dbms_id": "${vkcs_db_instance.mysql.id}",
                   "name": "testuser",
-                  "password": "SomePass1_"
+                  "password": "Test_p@ssword-12-3"
                 }
               references:
-                dbms_id: vkcs_db_instance.db-instance.id
-              dependencies:
-                vkcs_db_database.db-database: |-
-                    {
-                      "charset": "utf8",
-                      "collate": "utf8_general_ci",
-                      "dbms_id": "${vkcs_db_instance.db-instance.id}",
-                      "name": "testdb"
-                    }
-                vkcs_db_instance.db-instance: |-
-                    {
-                      "availability_zone": "GZ1",
-                      "datastore": [
-                        {
-                          "type": "mysql",
-                          "version": "5.7"
-                        }
-                      ],
-                      "depends_on": [
-                        "${vkcs_networking_router_interface.db}"
-                      ],
-                      "flavor_id": "${data.vkcs_compute_flavor.db.id}",
-                      "name": "db-instance",
-                      "network": [
-                        {
-                          "uuid": "${vkcs_networking_network.db.id}"
-                        }
-                      ],
-                      "size": 8,
-                      "volume_type": "ceph-ssd"
-                    }
+                dbms_id: vkcs_db_instance.mysql.id
         argumentDocs:
             databases: optional string →  List of names of the databases, that user is created for.
             dbms_id: required string →  ID of the instance or cluster that user is created for.
@@ -1817,94 +1513,24 @@ resources:
         name: vkcs_keymanager_container
         title: vkcs_keymanager_container
         examples:
-            - name: tls_1
+            - name: lb_cert
               manifest: |-
                 {
-                  "name": "tls",
+                  "name": "container-tf-example",
                   "secret_refs": [
                     {
                       "name": "certificate",
-                      "secret_ref": "${vkcs_keymanager_secret.certificate_1.secret_ref}"
+                      "secret_ref": "${vkcs_keymanager_secret.certificate.secret_ref}"
                     },
                     {
                       "name": "private_key",
-                      "secret_ref": "${vkcs_keymanager_secret.private_key_1.secret_ref}"
-                    },
-                    {
-                      "name": "intermediates",
-                      "secret_ref": "${vkcs_keymanager_secret.intermediate_1.secret_ref}"
+                      "secret_ref": "${vkcs_keymanager_secret.priv_key.secret_ref}"
                     }
                   ],
                   "type": "certificate"
                 }
-              dependencies:
-                vkcs_keymanager_secret.certificate_1: |-
-                    {
-                      "name": "certificate",
-                      "payload": "${file(\"cert.pem\")}",
-                      "payload_content_type": "text/plain",
-                      "secret_type": "certificate"
-                    }
-                vkcs_keymanager_secret.intermediate_1: |-
-                    {
-                      "name": "intermediate",
-                      "payload": "${file(\"intermediate-ca.pem\")}",
-                      "payload_content_type": "text/plain",
-                      "secret_type": "certificate"
-                    }
-                vkcs_keymanager_secret.private_key_1: |-
-                    {
-                      "name": "private_key",
-                      "payload": "${file(\"cert-key.pem\")}",
-                      "payload_content_type": "text/plain",
-                      "secret_type": "private"
-                    }
-                vkcs_lb_listener.listener_1: |-
-                    {
-                      "default_tls_container_ref": "${vkcs_keymanager_container.tls_1.container_ref}",
-                      "loadbalancer_id": "${vkcs_lb_loadbalancer.lb_1.id}",
-                      "name": "https",
-                      "protocol": "TERMINATED_HTTPS",
-                      "protocol_port": 443
-                    }
-                vkcs_lb_loadbalancer.lb_1: |-
-                    {
-                      "name": "loadbalancer",
-                      "vip_subnet_id": "${data.vkcs_networking_subnet.subnet_1.id}"
-                    }
-            - name: tls_1
-              manifest: |-
-                {
-                  "acl": [
-                    {
-                      "read": [
-                        {
-                          "project_access": false,
-                          "users": [
-                            "userid1",
-                            "userid2"
-                          ]
-                        }
-                      ]
-                    }
-                  ],
-                  "name": "tls",
-                  "secret_refs": [
-                    {
-                      "name": "certificate",
-                      "secret_ref": "${vkcs_keymanager_secret.certificate_1.secret_ref}"
-                    },
-                    {
-                      "name": "private_key",
-                      "secret_ref": "${vkcs_keymanager_secret.private_key_1.secret_ref}"
-                    },
-                    {
-                      "name": "intermediates",
-                      "secret_ref": "${vkcs_keymanager_secret.intermediate_1.secret_ref}"
-                    }
-                  ],
-                  "type": "certificate"
-                }
+              references:
+                secret_refs.secret_ref: vkcs_keymanager_secret.priv_key.secret_ref
         argumentDocs:
             acl: optional →  Allows to control an access to a container. Currently only the read operation is supported. If not specified, the container is accessible project wide. The read structure is described below.
             consumers: object →  The list of the container consumers. The structure is described below.
@@ -1930,63 +1556,19 @@ resources:
         name: vkcs_keymanager_secret
         title: vkcs_keymanager_secret
         examples:
-            - name: secret_1
+            - name: priv_key
               manifest: |-
                 {
-                  "algorithm": "aes",
-                  "bit_length": 256,
-                  "metadata": {
-                    "key": "foo"
-                  },
-                  "mode": "cbc",
-                  "name": "mysecret",
-                  "payload": "foobar",
+                  "name": "priv-key-tf-example",
+                  "payload": "${file(\"${path.module}/private-key.key\")}",
                   "payload_content_type": "text/plain",
-                  "secret_type": "passphrase"
+                  "secret_type": "private"
                 }
-            - name: secret_1
+            - name: certificate
               manifest: |-
                 {
-                  "name": "password",
-                  "payload": "${base64encode(\"password with the whitespace at the end \")}",
-                  "payload_content_encoding": "base64",
-                  "payload_content_type": "application/octet-stream",
-                  "secret_type": "passphrase"
-                }
-            - name: secret_1
-              manifest: |-
-                {
-                  "expiration": "${timeadd(timestamp(), format(\"%dh\", 8760))}",
-                  "lifecycle": [
-                    {
-                      "ignore_changes": [
-                        "${expiration}"
-                      ]
-                    }
-                  ],
-                  "name": "certificate",
-                  "payload": "${file(\"certificate.pem\")}",
-                  "payload_content_type": "text/plain",
-                  "secret_type": "certificate"
-                }
-            - name: secret_1
-              manifest: |-
-                {
-                  "acl": [
-                    {
-                      "read": [
-                        {
-                          "project_access": false,
-                          "users": [
-                            "userid1",
-                            "userid2"
-                          ]
-                        }
-                      ]
-                    }
-                  ],
-                  "name": "certificate",
-                  "payload": "${file(\"certificate.pem\")}",
+                  "name": "certificate-tf-example",
+                  "payload": "${file(\"${path.module}/certificate.pem\")}",
                   "payload_content_type": "text/plain",
                   "secret_type": "certificate"
                 }
@@ -2073,7 +1655,8 @@ resources:
                   "master_flavor": "${data.vkcs_compute_flavor.basic.id}",
                   "name": "k8s-cluster",
                   "network_id": "${vkcs_networking_network.app.id}",
-                  "subnet_id": "${vkcs_networking_subnet.app.id}"
+                  "subnet_id": "${vkcs_networking_subnet.app.id}",
+                  "sync_security_policy": true
                 }
               references:
                 cluster_template_id: data.vkcs_kubernetes_clustertemplate.k8s_24.id
@@ -2115,6 +1698,7 @@ resources:
             stack_id: string →  UUID of the Orchestration service stack.
             status: optional string →  Current state of a cluster. Changing this to RUNNING or SHUTOFF will turn cluster on/off.
             subnet_id: required string →  UUID of the cluster's subnet.
+            sync_security_policy: optional boolean →  Enables syncing of security policies of cluster. Default value is false.New since v0.7.0.
             updated_at: string →  The time at which cluster was created.
             user_id: string →  The user of the cluster.
         importStatements:
@@ -2184,53 +1768,55 @@ resources:
             volume_type: optional string →  The volume type to load nodes from. Changing this will force to create a new node group.
         importStatements:
             - terraform import vkcs_kubernetes_node_group.ng aa14de9c-c5f5-4cc0-869c-ce655419df76
+    vkcs_kubernetes_security_policy:
+        subCategory: Kubernetes
+        description: Manages a kubernetes cluster security policy.
+        name: vkcs_kubernetes_security_policy
+        title: vkcs_kubernetes_security_policy
+        examples:
+            - name: replicalimits
+              manifest: |-
+                {
+                  "cluster_id": "${vkcs_kubernetes_cluster.k8s-cluster.id}",
+                  "enabled": true,
+                  "namespace": "*",
+                  "policy_settings": "${jsonencode(local.policy_settings)}",
+                  "security_policy_template_id": "${data.vkcs_kubernetes_security_policy_template.replicalimits.id}"
+                }
+              references:
+                cluster_id: vkcs_kubernetes_cluster.k8s-cluster.id
+                security_policy_template_id: data.vkcs_kubernetes_security_policy_template.replicalimits.id
+        argumentDocs:
+            cluster_id: required string →  The ID of the kubernetes cluster. Changing this creates a new security policy.
+            created_at: string →  Creation timestamp
+            enabled: optional boolean →  Controls whether the security policy is enabled. Default is true.
+            id: string →  ID of the resource
+            namespace: required string →  Namespace to apply security policy to.
+            policy_settings: required string →  Policy settings.
+            region: optional string →  The region in which to obtain the Container Infra client. If omitted, the region argument of the provider is used. Changing this creates a new security policy.
+            security_policy_template_id: required string →  The ID of the security policy template. Changing this creates a new security policy.
+            updated_at: string →  Update timestamp.
+        importStatements:
+            - terraform import vkcs_kubernetes_security_policy.sp 723bfe25-5b2b-4410-aba0-1c0ef6d1c8b0
     vkcs_lb_l7policy:
         subCategory: Load Balancers
         description: Manages a L7 Policy resource within VKCS.
         name: vkcs_lb_l7policy
         title: vkcs_lb_l7policy
         examples:
-            - name: l7policy_1
+            - name: app_redirect
               manifest: |-
                 {
                   "action": "REDIRECT_TO_POOL",
-                  "description": "test l7 policy",
-                  "listener_id": "${vkcs_lb_listener.listener_1.id}",
-                  "name": "test",
+                  "description": "Policy for tf lb testing",
+                  "listener_id": "${vkcs_lb_listener.app_http.id}",
+                  "name": "http-tf-example",
                   "position": 1,
-                  "redirect_pool_id": "${vkcs_lb_pool.pool_1.id}"
+                  "redirect_pool_id": "${vkcs_lb_pool.http.id}"
                 }
-              dependencies:
-                vkcs_lb_listener.listener_1: |-
-                    {
-                      "loadbalancer_id": "${vkcs_lb_loadbalancer.loadbalancer_1.id}",
-                      "name": "listener_1",
-                      "protocol": "HTTP",
-                      "protocol_port": 8080
-                    }
-                vkcs_lb_loadbalancer.loadbalancer_1: |-
-                    {
-                      "name": "loadbalancer_1",
-                      "vip_subnet_id": "${vkcs_networking_subnet.subnet_1.id}"
-                    }
-                vkcs_lb_pool.pool_1: |-
-                    {
-                      "lb_method": "ROUND_ROBIN",
-                      "loadbalancer_id": "${vkcs_lb_loadbalancer.loadbalancer_1.id}",
-                      "name": "pool_1",
-                      "protocol": "HTTP"
-                    }
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_subnet.subnet_1: |-
-                    {
-                      "cidr": "192.168.199.0/24",
-                      "name": "subnet_1",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
+              references:
+                listener_id: vkcs_lb_listener.app_http.id
+                redirect_pool_id: vkcs_lb_pool.http.id
         argumentDocs:
             action: required string →  The L7 Policy action - can either be REDIRECT_TO_POOL, REDIRECT_TO_URL or REJECT.
             admin_state_up: optional boolean →  The administrative state of the L7 Policy. A valid value is true (UP) or false (DOWN).
@@ -2250,54 +1836,16 @@ resources:
         name: vkcs_lb_l7rule
         title: vkcs_lb_l7rule
         examples:
-            - name: l7rule_1
+            - name: app_api_redirect
               manifest: |-
                 {
                   "compare_type": "EQUAL_TO",
-                  "l7policy_id": "${vkcs_lb_l7policy.l7policy_1.id}",
+                  "l7policy_id": "${vkcs_lb_l7policy.app_redirect.id}",
                   "type": "PATH",
                   "value": "/api"
                 }
-              dependencies:
-                vkcs_lb_l7policy.l7policy_1: |-
-                    {
-                      "action": "REDIRECT_TO_URL",
-                      "description": "test description",
-                      "listener_id": "${vkcs_lb_listener.listener_1.id}",
-                      "name": "test",
-                      "position": 1,
-                      "redirect_url": "http://www.example.com"
-                    }
-                vkcs_lb_listener.listener_1: |-
-                    {
-                      "loadbalancer_id": "${vkcs_lb_loadbalancer.loadbalancer_1.id}",
-                      "name": "listener_1",
-                      "protocol": "HTTP",
-                      "protocol_port": 8080
-                    }
-                vkcs_lb_loadbalancer.loadbalancer_1: |-
-                    {
-                      "name": "loadbalancer_1",
-                      "vip_subnet_id": "${vkcs_networking_subnet.subnet_1.id}"
-                    }
-                vkcs_lb_pool.pool_1: |-
-                    {
-                      "lb_method": "ROUND_ROBIN",
-                      "loadbalancer_id": "${vkcs_lb_loadbalancer.loadbalancer_1.id}",
-                      "name": "pool_1",
-                      "protocol": "HTTP"
-                    }
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_subnet.subnet_1: |-
-                    {
-                      "cidr": "192.168.199.0/24",
-                      "name": "subnet_1",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
+              references:
+                l7policy_id: vkcs_lb_l7policy.app_redirect.id
         argumentDocs:
             admin_state_up: optional boolean →  The administrative state of the L7 Rule. A valid value is true (UP) or false (DOWN).
             compare_type: required string →  The comparison type for the L7 rule - can either be CONTAINS, STARTS_WITH, ENDS_WITH, EQUAL_TO or REGEX
@@ -2317,16 +1865,30 @@ resources:
         name: vkcs_lb_listener
         title: vkcs_lb_listener
         examples:
-            - name: listener_1
+            - name: app_http
               manifest: |-
                 {
-                  "insert_headers": {
-                    "X-Forwarded-For": "true"
-                  },
-                  "loadbalancer_id": "d9415786-5f1a-428b-b35f-2f1523e146d2",
+                  "description": "Listener for resources/datasources testing",
+                  "loadbalancer_id": "${vkcs_lb_loadbalancer.app.id}",
+                  "name": "app-http-tf-example",
                   "protocol": "HTTP",
                   "protocol_port": 8080
                 }
+              references:
+                loadbalancer_id: vkcs_lb_loadbalancer.app.id
+            - name: app_terminated_https
+              manifest: |-
+                {
+                  "default_tls_container_ref": "${vkcs_keymanager_container.lb_cert.container_ref}",
+                  "description": "Listener for resources/datasources testing",
+                  "loadbalancer_id": "${vkcs_lb_loadbalancer.app.id}",
+                  "name": "app-https-tf-example",
+                  "protocol": "TERMINATED_HTTPS",
+                  "protocol_port": 8443
+                }
+              references:
+                default_tls_container_ref: vkcs_keymanager_container.lb_cert.container_ref
+                loadbalancer_id: vkcs_lb_loadbalancer.app.id
         argumentDocs:
             admin_state_up: optional boolean →  The administrative state of the Listener. A valid value is true (UP) or false (DOWN).
             allowed_cidrs: optional string →  A list of CIDR blocks that are permitted to connect to this listener, denying all other source addresses. If not present, defaults to allow all.
@@ -2354,11 +1916,18 @@ resources:
         name: vkcs_lb_loadbalancer
         title: vkcs_lb_loadbalancer
         examples:
-            - name: lb_1
+            - name: app
               manifest: |-
                 {
-                  "vip_subnet_id": "d9415786-5f1a-428b-b35f-2f1523e146d2"
+                  "description": "Loadbalancer for resources/datasources testing",
+                  "name": "app-tf-example",
+                  "tags": [
+                    "app-front-tf-example"
+                  ],
+                  "vip_subnet_id": "${vkcs_networking_subnet.app.id}"
                 }
+              references:
+                vip_subnet_id: vkcs_networking_subnet.app.id
         argumentDocs:
             admin_state_up: optional boolean →  The administrative state of the Loadbalancer. A valid value is true (UP) or false (DOWN).
             availability_zone: optional string →  The availability zone of the Loadbalancer. Changing this creates a new loadbalancer.
@@ -2380,13 +1949,15 @@ resources:
         name: vkcs_lb_member
         title: vkcs_lb_member
         examples:
-            - name: member_1
+            - name: front_http
               manifest: |-
                 {
-                  "address": "192.168.199.23",
-                  "pool_id": "935685fb-a896-40f9-9ff4-ae531a3a00fe",
+                  "address": "192.168.199.110",
+                  "pool_id": "${vkcs_lb_pool.http.id}",
                   "protocol_port": 8080
                 }
+              references:
+                pool_id: vkcs_lb_pool.http.id
         argumentDocs:
             address: required string →  The IP address of the member to receive traffic from the load balancer. Changing this creates a new member.
             admin_state_up: optional boolean →  The administrative state of the member. A valid value is true (UP) or false (DOWN). Defaults to true.
@@ -2405,21 +1976,28 @@ resources:
         name: vkcs_lb_members
         title: vkcs_lb_members
         examples:
-            - name: members_1
+            - name: front_workers
               manifest: |-
                 {
-                  "member": [
-                    {
-                      "address": "192.168.199.23",
-                      "protocol_port": 8080
-                    },
-                    {
-                      "address": "192.168.199.24",
-                      "protocol_port": 8080
-                    }
-                  ],
-                  "pool_id": "935685fb-a896-40f9-9ff4-ae531a3a00fe"
+                  "dynamic": {
+                    "member": [
+                      {
+                        "content": [
+                          {
+                            "address": "${member.value.access_ip_v4}",
+                            "protocol_port": 8080
+                          }
+                        ],
+                        "for_each": "${vkcs_compute_instance.front_worker}"
+                      }
+                    ]
+                  },
+                  "pool_id": "${vkcs_lb_pool.http.id}"
                 }
+              references:
+                dynamic.content.address: member.value.access_ip_v4
+                dynamic.for_each: vkcs_compute_instance.front_worker
+                pool_id: vkcs_lb_pool.http.id
         argumentDocs:
             address: required string →  The IP address of the members to receive traffic from the load balancer.
             admin_state_up: optional boolean →  The administrative state of the member. A valid value is true (UP) or false (DOWN). Defaults to true.
@@ -2440,15 +2018,18 @@ resources:
         name: vkcs_lb_monitor
         title: vkcs_lb_monitor
         examples:
-            - name: monitor_1
+            - name: worker_ping_life_checker
               manifest: |-
                 {
                   "delay": 20,
                   "max_retries": 5,
-                  "pool_id": "${vkcs_lb_pool.pool_1.id}",
+                  "name": "worker-ping-life-checker-tf-example",
+                  "pool_id": "${vkcs_lb_pool.http.id}",
                   "timeout": 10,
                   "type": "PING"
                 }
+              references:
+                pool_id: vkcs_lb_pool.http.id
         argumentDocs:
             admin_state_up: optional boolean →  The administrative state of the monitor. A valid value is true (UP) or false (DOWN).
             delay: required number →  The time, in seconds, between sending probes to members.
@@ -2471,19 +2052,17 @@ resources:
         name: vkcs_lb_pool
         title: vkcs_lb_pool
         examples:
-            - name: pool_1
+            - name: http
               manifest: |-
                 {
+                  "description": "Pool for http member/members testing",
                   "lb_method": "ROUND_ROBIN",
-                  "listener_id": "d9415786-5f1a-428b-b35f-2f1523e146d2",
-                  "persistence": [
-                    {
-                      "cookie_name": "testCookie",
-                      "type": "APP_COOKIE"
-                    }
-                  ],
+                  "listener_id": "${vkcs_lb_listener.app_http.id}",
+                  "name": "http-tf-example",
                   "protocol": "HTTP"
                 }
+              references:
+                listener_id: vkcs_lb_listener.app_http.id
         argumentDocs:
             admin_state_up: optional boolean →  The administrative state of the pool. A valid value is true (UP) or false (DOWN).
             cookie_name: optional string →  The name of the cookie if persistence mode is set appropriately. Required if type = APP_COOKIE.
@@ -2499,6 +2078,279 @@ resources:
             type: required string →  The type of persistence mode. The current specification supports SOURCE_IP, HTTP_COOKIE, and APP_COOKIE.
         importStatements:
             - terraform import vkcs_lb_pool.pool_1 60ad9ee4-249a-4d60-a45b-aa60e046c513
+    vkcs_mlplatform_jupyterhub:
+        subCategory: ML Platform
+        description: Manages a ML Platform JupyterHub instance resource within VKCS.
+        name: vkcs_mlplatform_jupyterhub
+        title: vkcs_mlplatform_jupyterhub
+        examples:
+            - name: jupyterhub
+              manifest: |-
+                {
+                  "admin_name": "admin",
+                  "admin_password": "Password!",
+                  "availability_zone": "GZ1",
+                  "boot_volume": {
+                    "volume_type": "ceph-ssd"
+                  },
+                  "data_volumes": [
+                    {
+                      "size": 60,
+                      "volume_type": "ceph-ssd"
+                    },
+                    {
+                      "size": 70,
+                      "volume_type": "ceph-ssd"
+                    }
+                  ],
+                  "flavor_id": "${data.vkcs_compute_flavor.basic.id}",
+                  "name": "tf-example",
+                  "networks": [
+                    {
+                      "network_id": "${vkcs_networking_network.app.id}"
+                    }
+                  ]
+                }
+              references:
+                flavor_id: data.vkcs_compute_flavor.basic.id
+        argumentDocs:
+            admin_name: optional string →  JupyterHub admin name. Changing this creates a new resource
+            admin_password: optional sensitive string →  JupyterHub admin password. Changing this creates a new resource
+            availability_zone: required string →  The availability zone in which to create the resource. Changing this creates a new resource
+            boot_volume: required →  Instance's boot volume configuration
+            created_at: string →  Creation timestamp
+            data_volumes: list →  Instance's data volumes configuration
+            dns_name: string →  DNS name
+            domain_name: optional string →  Domain name. Changing this creates a new resource
+            flavor_id: required string →  Flavor ID
+            id: string →  ID of the resource
+            ip_pool: optional string →  ID of the ip pool
+            name: read-only string →  Name of the volume
+            network_id: required string →  ID of the network
+            networks: list →  Network configuration
+            private_ip: string →  Private IP address
+            region: optional string →  The region in which ML Platform client is obtained, defaults to the provider's region.
+            s3fs_bucket: optional string →  Connect specified s3 bucket to instance as volume. Changing this creates a new resource
+            size: optional number →  Size of the volume
+            volume_id: read-only string →  ID of the volume
+            volume_type: required string →  Type of the volume
+        importStatements:
+            - terraform import vkcs_mlplatform_jupyterhub.myjupyterhub 3a679dd9-0942-49b0-b233-95de5a5a9502
+    vkcs_mlplatform_k8s_registry:
+        subCategory: ML Platform
+        description: Manages a ML Platform K8S Registry instance resource within VKCS.
+        name: vkcs_mlplatform_k8s_registry
+        title: vkcs_mlplatform_k8s_registry
+        examples:
+            - name: k8s_registry
+              manifest: |-
+                {
+                  "admin_name": "admin",
+                  "admin_password": "dM8Ao21,0S264iZp",
+                  "availability_zone": "GZ1",
+                  "boot_volume": {
+                    "volume_type": "ceph-ssd"
+                  },
+                  "flavor_id": "${data.vkcs_compute_flavor.basic.id}",
+                  "name": "tf-example",
+                  "networks": [
+                    {
+                      "ip_pool": "${data.vkcs_networking_network.extnet.id}",
+                      "network_id": "${vkcs_networking_network.app.id}"
+                    }
+                  ]
+                }
+              references:
+                flavor_id: data.vkcs_compute_flavor.basic.id
+        argumentDocs:
+            admin_name: optional string →  K8SRegistry admin name. Changing this creates a new resource
+            admin_password: optional sensitive string →  K8SRegistry admin password. Changing this creates a new resource
+            availability_zone: required string →  The availability zone in which to create the resource. Changing this creates a new resource
+            boot_volume: required →  Instance's boot volume configuration
+            created_at: string →  Creation timestamp
+            data_volumes: list →  Instance's data volumes configuration
+            dns_name: string →  DNS name
+            domain_name: optional string →  Domain name. Changing this creates a new resource
+            flavor_id: required string →  Flavor ID
+            id: string →  ID of the resource
+            ip_pool: required string →  ID of the ip pool
+            name: read-only string →  Name of the volume
+            network_id: required string →  ID of the network
+            networks: list →  Network configuration
+            private_ip: string →  Private IP address
+            region: optional string →  The region in which ML Platform client is obtained, defaults to the provider's region.
+            size: optional number →  Size of the volume
+            volume_id: read-only string →  ID of the volume
+            volume_type: required string →  Type of the volume
+        importStatements:
+            - terraform import vkcs_mlplatform_k8s_registry.myk8sregistry 0229eb40-5b56-4ab1-857f-453848a542f3
+    vkcs_mlplatform_mlflow:
+        subCategory: ML Platform
+        description: Manages a ML Platform MLFlow instance resource within VKCS.
+        name: vkcs_mlplatform_mlflow
+        title: vkcs_mlplatform_mlflow
+        examples:
+            - name: mlflow
+              manifest: |-
+                {
+                  "availability_zone": "GZ1",
+                  "boot_volume": {
+                    "size": 50,
+                    "volume_type": "ceph-ssd"
+                  },
+                  "data_volumes": [
+                    {
+                      "size": 60,
+                      "volume_type": "ceph-ssd"
+                    }
+                  ],
+                  "demo_mode": true,
+                  "flavor_id": "${data.vkcs_compute_flavor.basic.id}",
+                  "jh_instance_id": "${vkcs_mlplatform_jupyterhub.jupyterhub.id}",
+                  "name": "tf-example",
+                  "networks": [
+                    {
+                      "network_id": "${vkcs_networking_network.app.id}"
+                    }
+                  ]
+                }
+              references:
+                flavor_id: data.vkcs_compute_flavor.basic.id
+                jh_instance_id: vkcs_mlplatform_jupyterhub.jupyterhub.id
+        argumentDocs:
+            availability_zone: required string →  The availability zone in which to create the resource. Changing this creates a new resource
+            boot_volume: required →  Instance's boot volume configuration
+            created_at: string →  Creation timestamp
+            data_volumes: list →  Instance's data volumes configuration
+            demo_mode: optional boolean →  Controls whether demo mode is enabled. If true, data will be stored on mlflow virtual machine. If false, s3 bucket will be used alongside dbaas postgres database.
+            dns_name: string →  DNS name
+            flavor_id: required string →  Flavor ID
+            id: string →  ID of the resource
+            ip_pool: optional string →  ID of the ip pool
+            jh_instance_id: required string →  JupyterHub instance ID
+            name: read-only string →  Name of the volume
+            network_id: required string →  ID of the network
+            networks: list →  Network configuration
+            private_ip: string →  Private IP address
+            region: optional string →  The region in which ML Platform client is obtained, defaults to the provider's region.
+            size: optional number →  Size of the volume
+            volume_id: read-only string →  ID of the volume
+            volume_type: required string →  Type of the volume
+        importStatements:
+            - terraform import vkcs_mlplatform_mlflow.mymlflow b22e0fd6-f7e5-41b7-9cc5-15c1f352bc0d
+    vkcs_mlplatform_mlflow_deploy:
+        subCategory: ML Platform
+        description: Manages a ML Platform MLFlow Deploy instance resource within VKCS.
+        name: vkcs_mlplatform_mlflow_deploy
+        title: vkcs_mlplatform_mlflow_deploy
+        examples:
+            - name: deploy
+              manifest: |-
+                {
+                  "availability_zone": "GZ1",
+                  "boot_volume": {
+                    "size": 50,
+                    "volume_type": "ceph-ssd"
+                  },
+                  "data_volumes": [
+                    {
+                      "size": 60,
+                      "volume_type": "ceph-ssd"
+                    }
+                  ],
+                  "flavor_id": "${data.vkcs_compute_flavor.basic.id}",
+                  "mlflow_instance_id": "${vkcs_mlplatform_mlflow.mlflow.id}",
+                  "name": "tf-example",
+                  "networks": [
+                    {
+                      "network_id": "${vkcs_networking_network.app.id}"
+                    }
+                  ]
+                }
+              references:
+                flavor_id: data.vkcs_compute_flavor.basic.id
+                mlflow_instance_id: vkcs_mlplatform_mlflow.mlflow.id
+        argumentDocs:
+            availability_zone: required string →  The availability zone in which to create the resource. Changing this creates a new resource
+            boot_volume: required →  Instance's boot volume configuration
+            created_at: string →  Creation timestamp
+            data_volumes: list →  Instance's data volumes configuration
+            dns_name: string →  DNS name
+            flavor_id: required string →  Flavor ID
+            id: string →  ID of the resource
+            ip_pool: optional string →  ID of the ip pool
+            mlflow_instance_id: required string →  MLFlow instance ID
+            name: read-only string →  Name of the volume
+            network_id: required string →  ID of the network
+            networks: list →  Network configuration
+            private_ip: string →  Private IP address
+            region: optional string →  The region in which ML Platform client is obtained, defaults to the provider's region.
+            size: optional number →  Size of the volume
+            volume_id: read-only string →  ID of the volume
+            volume_type: required string →  Type of the volume
+        importStatements:
+            - terraform import vkcs_mlplatform_mlflow_deploy.mymlflowdeploy 0cade671-81b5-43c5-83e1-2a659378d53a
+    vkcs_mlplatform_spark_k8s:
+        subCategory: ML Platform
+        description: Manages a ML Platform Spark K8S cluster resource within VKCS.
+        name: vkcs_mlplatform_spark_k8s
+        title: vkcs_mlplatform_spark_k8s
+        examples:
+            - name: spark_k8s
+              manifest: |-
+                {
+                  "availability_zone": "GZ1",
+                  "cluster_mode": "DEV",
+                  "delete_after_inactive_min": 1440,
+                  "environment_variables": "${yamlencode(local.spark_environment_variables)}",
+                  "ip_pool": "${data.vkcs_networking_network.extnet.id}",
+                  "name": "tf-example",
+                  "network_id": "${vkcs_networking_network.app.id}",
+                  "node_groups": [
+                    {
+                      "autoscaling_enabled": true,
+                      "flavor_id": "${data.vkcs_compute_flavor.basic.id}",
+                      "max_nodes": 100,
+                      "min_nodes": 2,
+                      "node_count": 2
+                    }
+                  ],
+                  "registry_id": "${vkcs_mlplatform_k8s_registry.k8s_registry.id}",
+                  "spark_configuration": "${yamlencode(local.spark_configuration)}",
+                  "subnet_id": "${vkcs_networking_subnet.app.id}",
+                  "suspend_after_inactive_min": 120
+                }
+              references:
+                ip_pool: data.vkcs_networking_network.extnet.id
+                network_id: vkcs_networking_network.app.id
+                registry_id: vkcs_mlplatform_k8s_registry.k8s_registry.id
+                subnet_id: vkcs_networking_subnet.app.id
+        argumentDocs:
+            autoscaling_enabled: required boolean →  Enables autoscaling for node group
+            availability_zone: required string →  The availability zone in which to create the resource. Changing this creates a new resource
+            cluster_mode: required string →  Cluster Mode. Should be DEV or PROD. Changing this creates a new resource
+            control_instance_id: string →  ID of the control instance
+            delete_after_inactive_min: optional number →  Timeout of cluster inactivity before deletion, in minutes. Changing this creates a new resource
+            environment_variables: 'optional string →  Environment variables. Read more about this parameter here: https://cloud.vk.com/docs/en/ml/spark-to-k8s/instructions/create. Changing this creates a new resource'
+            flavor_id: required string →  ID of the flavor to be used in nodes
+            history_server_url: string →  URL of the history server
+            id: string →  ID of the resource
+            inactive_min: number →  Current time of cluster inactivity, in minutes
+            ip_pool: required string →  ID of the ip pool. Changing this creates a new resource
+            max_nodes: optional number →  Maximum number of nodes in node group. It is used only when autoscaling is enabled
+            min_nodes: optional number →  Minimum count of nodes in node group. It is used only when autoscaling is enabled
+            name: required string →  Cluster name. Changing this creates a new resource
+            network_id: required string →  ID of the network. Changing this creates a new resource
+            node_count: optional number →  Count of nodes in node group
+            node_groups: list →  Cluster's node groups configuration
+            region: optional string →  The region in which ML Platform client is obtained, defaults to the provider's region.
+            registry_id: required string →  ID of the K8S registry to use with cluster. Changing this creates a new resource
+            s3_bucket_name: string →  S3 bucket name
+            spark_configuration: 'optional string →  Spark configuration. Read more about this parameter here: https://cloud.vk.com/docs/en/ml/spark-to-k8s/instructions/create. Changing this creates a new resource'
+            subnet_id: optional string →  ID of the subnet. Changing this creates a new resource
+            suspend_after_inactive_min: optional number →  Timeout of cluster inactivity before suspending, in minutes. Changing this creates a new resource
+        importStatements:
+            - terraform import vkcs_mlplatform_spark_k8s.mysparkk8s 32cc47a5-9726-454f-bffa-6723f21fbbc7
     vkcs_networking_floatingip:
         subCategory: Network
         description: Manages a floating IP resource within VKCS.
@@ -3017,17 +2869,14 @@ resources:
         name: vkcs_sharedfilesystem_securityservice
         title: vkcs_sharedfilesystem_securityservice
         examples:
-            - name: securityservice_1
+            - name: ad_common
               manifest: |-
                 {
-                  "description": "created by terraform",
+                  "description": "active directory tf example",
                   "dns_ip": "192.168.199.10",
-                  "domain": "example.com",
-                  "name": "security",
-                  "password": "s8cret",
+                  "name": "active-directory-tf-example",
                   "server": "192.168.199.10",
-                  "type": "active_directory",
-                  "user": "joinDomainUser"
+                  "type": "active_directory"
                 }
         argumentDocs:
             description: optional string →  The human-readable description for the security service. Changing this updates the description of the existing security service.
@@ -3049,34 +2898,18 @@ resources:
         name: vkcs_sharedfilesystem_share
         title: vkcs_sharedfilesystem_share
         examples:
-            - name: share_1
+            - name: data
               manifest: |-
                 {
-                  "description": "test share description",
-                  "name": "nfs_share",
+                  "description": "example of creating tf share",
+                  "name": "share-data-tf-example",
+                  "share_network_id": "${vkcs_sharedfilesystem_sharenetwork.data.id}",
                   "share_proto": "NFS",
+                  "share_type": "default_share_type",
                   "size": 1
                 }
-              dependencies:
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_subnet.subnet_1: |-
-                    {
-                      "cidr": "192.168.199.0/24",
-                      "ip_version": 4,
-                      "name": "subnet_1",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
-                vkcs_sharedfilesystem_sharenetwork.sharenetwork_1: |-
-                    {
-                      "description": "test share network with security services",
-                      "name": "test_sharenetwork",
-                      "neutron_net_id": "${vkcs_networking_network.network_1.id}",
-                      "neutron_subnet_id": "${vkcs_networking_subnet.subnet_1.id}"
-                    }
+              references:
+                share_network_id: vkcs_sharedfilesystem_sharenetwork.data.id
         argumentDocs:
             all_metadata: map of string →  The map of metadata, assigned on the share, which has been explicitly and implicitly added.
             availability_zone: optional string →  The share availability zone. Changing this creates a new share.
@@ -3100,140 +2933,16 @@ resources:
         name: vkcs_sharedfilesystem_share_access
         title: vkcs_sharedfilesystem_share_access
         examples:
-            - name: share_access_1
+            - name: opencloud
               manifest: |-
                 {
                   "access_level": "rw",
-                  "access_to": "192.168.199.10",
+                  "access_to": "192.168.199.11",
                   "access_type": "ip",
-                  "share_id": "${vkcs_sharedfilesystem_share.share_1.id}"
+                  "share_id": "${vkcs_sharedfilesystem_share.data.id}"
                 }
-              dependencies:
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_subnet.subnet_1: |-
-                    {
-                      "cidr": "192.168.199.0/24",
-                      "ip_version": 4,
-                      "name": "subnet_1",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
-                vkcs_sharedfilesystem_share.share_1: |-
-                    {
-                      "description": "test share description",
-                      "name": "nfs_share",
-                      "share_network_id": "${vkcs_sharedfilesystem_sharenetwork.sharenetwork_1.id}",
-                      "share_proto": "NFS",
-                      "size": 1
-                    }
-                vkcs_sharedfilesystem_sharenetwork.sharenetwork_1: |-
-                    {
-                      "description": "test share network with security services",
-                      "name": "test_sharenetwork",
-                      "neutron_net_id": "${vkcs_networking_network.network_1.id}",
-                      "neutron_subnet_id": "${vkcs_networking_subnet.subnet_1.id}"
-                    }
-            - name: share_access_1
-              manifest: |-
-                {
-                  "access_level": "ro",
-                  "access_to": "windows",
-                  "access_type": "user",
-                  "share_id": "${vkcs_sharedfilesystem_share.share_1.id}"
-                }
-              dependencies:
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_subnet.subnet_1: |-
-                    {
-                      "cidr": "192.168.199.0/24",
-                      "ip_version": 4,
-                      "name": "subnet_1",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
-                vkcs_sharedfilesystem_securityservice.securityservice_1: |-
-                    {
-                      "description": "created by terraform",
-                      "dns_ip": "192.168.199.10",
-                      "domain": "example.com",
-                      "name": "security",
-                      "password": "s8cret",
-                      "server": "192.168.199.10",
-                      "type": "active_directory",
-                      "user": "joinDomainUser"
-                    }
-                vkcs_sharedfilesystem_share.share_1: |-
-                    {
-                      "name": "cifs_share",
-                      "share_network_id": "${vkcs_sharedfilesystem_sharenetwork.sharenetwork_1.id}",
-                      "share_proto": "CIFS",
-                      "size": 1
-                    }
-                vkcs_sharedfilesystem_sharenetwork.sharenetwork_1: |-
-                    {
-                      "description": "share the secure love",
-                      "name": "test_sharenetwork_secure",
-                      "neutron_net_id": "${vkcs_networking_network.network_1.id}",
-                      "neutron_subnet_id": "${vkcs_networking_subnet.subnet_1.id}",
-                      "security_service_ids": [
-                        "${vkcs_sharedfilesystem_securityservice.securityservice_1.id}"
-                      ]
-                    }
-            - name: share_access_2
-              manifest: |-
-                {
-                  "access_level": "rw",
-                  "access_to": "linux",
-                  "access_type": "user",
-                  "share_id": "${vkcs_sharedfilesystem_share.share_1.id}"
-                }
-              dependencies:
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_subnet.subnet_1: |-
-                    {
-                      "cidr": "192.168.199.0/24",
-                      "ip_version": 4,
-                      "name": "subnet_1",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
-                vkcs_sharedfilesystem_securityservice.securityservice_1: |-
-                    {
-                      "description": "created by terraform",
-                      "dns_ip": "192.168.199.10",
-                      "domain": "example.com",
-                      "name": "security",
-                      "password": "s8cret",
-                      "server": "192.168.199.10",
-                      "type": "active_directory",
-                      "user": "joinDomainUser"
-                    }
-                vkcs_sharedfilesystem_share.share_1: |-
-                    {
-                      "name": "cifs_share",
-                      "share_network_id": "${vkcs_sharedfilesystem_sharenetwork.sharenetwork_1.id}",
-                      "share_proto": "CIFS",
-                      "size": 1
-                    }
-                vkcs_sharedfilesystem_sharenetwork.sharenetwork_1: |-
-                    {
-                      "description": "share the secure love",
-                      "name": "test_sharenetwork_secure",
-                      "neutron_net_id": "${vkcs_networking_network.network_1.id}",
-                      "neutron_subnet_id": "${vkcs_networking_subnet.subnet_1.id}",
-                      "security_service_ids": [
-                        "${vkcs_sharedfilesystem_securityservice.securityservice_1.id}"
-                      ]
-                    }
+              references:
+                share_id: vkcs_sharedfilesystem_share.data.id
         argumentDocs:
             access_level: required string →  The access level to the share. Can either be rw or ro.
             access_to: required string →  The value that defines the access. Can either be an IP address or a username verified by configured Security Service of the Share Network.
@@ -3249,27 +2958,17 @@ resources:
         name: vkcs_sharedfilesystem_sharenetwork
         title: vkcs_sharedfilesystem_sharenetwork
         examples:
-            - name: sharenetwork_1
+            - name: data
               manifest: |-
                 {
-                  "description": "test share network",
-                  "name": "test_sharenetwork",
-                  "neutron_net_id": "${vkcs_networking_network.network_1.id}",
-                  "neutron_subnet_id": "${vkcs_networking_subnet.subnet_1.id}"
+                  "description": "sharing network for tf example",
+                  "name": "sharenetwork-tf-example",
+                  "neutron_net_id": "${vkcs_networking_network.app.id}",
+                  "neutron_subnet_id": "${vkcs_networking_subnet.app.id}"
                 }
-              dependencies:
-                vkcs_networking_network.network_1: |-
-                    {
-                      "admin_state_up": "true",
-                      "name": "network_1"
-                    }
-                vkcs_networking_subnet.subnet_1: |-
-                    {
-                      "cidr": "192.168.199.0/24",
-                      "ip_version": 4,
-                      "name": "subnet_1",
-                      "network_id": "${vkcs_networking_network.network_1.id}"
-                    }
+              references:
+                neutron_net_id: vkcs_networking_network.app.id
+                neutron_subnet_id: vkcs_networking_subnet.app.id
             - name: sharenetwork_1
               manifest: |-
                 {
@@ -3323,15 +3022,23 @@ resources:
         name: vkcs_vpnaas_endpoint_group
         title: vkcs_vpnaas_endpoint_group
         examples:
-            - name: group_1
+            - name: allowed_hosts
               manifest: |-
                 {
                   "endpoints": [
                     "10.2.0.0/24",
                     "10.3.0.0/24"
                   ],
-                  "name": "Group 1",
+                  "name": "allowed-hosts-tf-example",
                   "type": "cidr"
+                }
+            - name: subnet_hosts
+              manifest: |-
+                {
+                  "endpoints": [
+                    "${vkcs_networking_subnet.app.id}"
+                  ],
+                  "type": "subnet"
                 }
         argumentDocs:
             description: optional string →  The human-readable description for the group. Changing this updates the description of the existing group.
@@ -3349,10 +3056,12 @@ resources:
         name: vkcs_vpnaas_ike_policy
         title: vkcs_vpnaas_ike_policy
         examples:
-            - name: policy_2
+            - name: data_center
               manifest: |-
                 {
-                  "name": "my_policy"
+                  "auth_algorithm": "sha256",
+                  "description": "Policy that restricts remote working users to connect to our data ceneter over VPN",
+                  "name": "key-policy-tf-example"
                 }
         argumentDocs:
             auth_algorithm: optional string →  The authentication hash algorithm. Valid values are sha1, sha256, sha384, sha512. Default is sha1. Changing this updates the algorithm of the existing policy.
@@ -3376,10 +3085,17 @@ resources:
         name: vkcs_vpnaas_ipsec_policy
         title: vkcs_vpnaas_ipsec_policy
         examples:
-            - name: policy_1
+            - name: data_center
               manifest: |-
                 {
-                  "name": "my_policy"
+                  "description": "Policy that restricts remote working users to connect to our data ceneter over VPN",
+                  "lifetime": [
+                    {
+                      "units": "seconds",
+                      "value": 3600
+                    }
+                  ],
+                  "name": "database-key-policy-tf-example"
                 }
         argumentDocs:
             auth_algorithm: optional string →  The authentication hash algorithm. Valid values are sha1, sha256, sha384, sha512. Default is sha1. Changing this updates the algorithm of the existing policy.
@@ -3403,13 +3119,14 @@ resources:
         name: vkcs_vpnaas_service
         title: vkcs_vpnaas_service
         examples:
-            - name: service_1
+            - name: vpn_to_datacenter
               manifest: |-
                 {
-                  "admin_state_up": "true",
-                  "name": "my_service",
-                  "router_id": "14a75700-fc03-4602-9294-26ee44f366b3"
+                  "name": "vpn-tf-example",
+                  "router_id": "${vkcs_networking_router.router.id}"
                 }
+              references:
+                router_id: vkcs_networking_router.router.id
         argumentDocs:
             admin_state_up: optional boolean →  The administrative state of the resource. Can either be up(true) or down(false). Changing this updates the administrative state of the existing service.
             description: optional string →  The human-readable description for the service. Changing this updates the description of the existing service.
@@ -3434,7 +3151,7 @@ resources:
               manifest: |-
                 {
                   "depends_on": [
-                    "vkcs_networking_router_interface.router_interface"
+                    "${vkcs_networking_router_interface.app}"
                   ],
                   "dpd": [
                     {
@@ -3443,50 +3160,22 @@ resources:
                       "timeout": 42
                     }
                   ],
-                  "ikepolicy_id": "${vkcs_vpnaas_ike_policy.policy_2.id}",
-                  "ipsecpolicy_id": "${vkcs_vpnaas_ipsec_policy.policy_1.id}",
-                  "local_ep_group_id": "${vkcs_vpnaas_endpoint_group.group_2.id}",
+                  "ikepolicy_id": "${vkcs_vpnaas_ike_policy.data_center.id}",
+                  "ipsecpolicy_id": "${vkcs_vpnaas_ipsec_policy.data_center.id}",
+                  "local_ep_group_id": "${vkcs_vpnaas_endpoint_group.subnet_hosts.id}",
                   "name": "connection",
                   "peer_address": "192.168.10.1",
-                  "peer_ep_group_id": "${vkcs_vpnaas_endpoint_group.group_1.id}",
+                  "peer_ep_group_id": "${vkcs_vpnaas_endpoint_group.allowed_hosts.id}",
                   "peer_id": "192.168.10.1",
                   "psk": "secret",
-                  "sdn": "neutron",
-                  "vpnservice_id": "${vkcs_vpnaas_service.service.id}"
+                  "vpnservice_id": "${vkcs_vpnaas_service.vpn_to_datacenter.id}"
                 }
-              dependencies:
-                vkcs_vpnaas_endpoint_group.group_1: |-
-                    {
-                      "endpoints": [
-                        "10.0.0.24/24",
-                        "10.0.0.25/24"
-                      ],
-                      "sdn": "neutron",
-                      "type": "cidr"
-                    }
-                vkcs_vpnaas_endpoint_group.group_2: |-
-                    {
-                      "endpoints": [
-                        "${vkcs_networking_subnet.subnet.id}"
-                      ],
-                      "sdn": "neutron",
-                      "type": "subnet"
-                    }
-                vkcs_vpnaas_ike_policy.policy_2: |-
-                    {
-                      "name": "ike-policy",
-                      "sdn": "neutron"
-                    }
-                vkcs_vpnaas_ipsec_policy.policy_1: |-
-                    {
-                      "name": "ipsec-policy",
-                      "sdn": "neutron"
-                    }
-                vkcs_vpnaas_service.service: |-
-                    {
-                      "router_id": "${vkcs_networking_router.router.id}",
-                      "sdn": "neutron"
-                    }
+              references:
+                ikepolicy_id: vkcs_vpnaas_ike_policy.data_center.id
+                ipsecpolicy_id: vkcs_vpnaas_ipsec_policy.data_center.id
+                local_ep_group_id: vkcs_vpnaas_endpoint_group.subnet_hosts.id
+                peer_ep_group_id: vkcs_vpnaas_endpoint_group.allowed_hosts.id
+                vpnservice_id: vkcs_vpnaas_service.vpn_to_datacenter.id
         argumentDocs:
             action: optional string →  The dead peer detection (DPD) action. A valid value is clear, hold, restart, disabled, or restart-by-peer. Default value is hold.
             admin_state_up: optional boolean →  The administrative state of the resource. Can either be up(true) or down(false). Changing this updates the administrative state of the existing connection.

@@ -9,44 +9,60 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
-	image "github.com/viletay/provider-vkcs/internal/controller/images/image"
-	floatingip "github.com/viletay/provider-vkcs/internal/controller/networking/floatingip"
-	floatingipassociate "github.com/viletay/provider-vkcs/internal/controller/networking/floatingipassociate"
-	network "github.com/viletay/provider-vkcs/internal/controller/networking/network"
-	port "github.com/viletay/provider-vkcs/internal/controller/networking/port"
-	portsecgroupassociate "github.com/viletay/provider-vkcs/internal/controller/networking/portsecgroupassociate"
-	router "github.com/viletay/provider-vkcs/internal/controller/networking/router"
-	routerinterface "github.com/viletay/provider-vkcs/internal/controller/networking/routerinterface"
-	routerroute "github.com/viletay/provider-vkcs/internal/controller/networking/routerroute"
-	secgroup "github.com/viletay/provider-vkcs/internal/controller/networking/secgroup"
-	secgrouprule "github.com/viletay/provider-vkcs/internal/controller/networking/secgrouprule"
-	subnet "github.com/viletay/provider-vkcs/internal/controller/networking/subnet"
-	subnetroute "github.com/viletay/provider-vkcs/internal/controller/networking/subnetroute"
+	floatingipassociate "github.com/viletay/provider-vkcs/internal/controller/compute/floatingipassociate"
+	instance "github.com/viletay/provider-vkcs/internal/controller/compute/instance"
+	interfaceattach "github.com/viletay/provider-vkcs/internal/controller/compute/interfaceattach"
+	keypair "github.com/viletay/provider-vkcs/internal/controller/compute/keypair"
+	servergroup "github.com/viletay/provider-vkcs/internal/controller/compute/servergroup"
+	volumeattach "github.com/viletay/provider-vkcs/internal/controller/compute/volumeattach"
+	image "github.com/viletay/provider-vkcs/internal/controller/disk/image"
+	snapshot "github.com/viletay/provider-vkcs/internal/controller/disk/snapshot"
+	volume "github.com/viletay/provider-vkcs/internal/controller/disk/volume"
+	record "github.com/viletay/provider-vkcs/internal/controller/dns/record"
+	zone "github.com/viletay/provider-vkcs/internal/controller/dns/zone"
+	floatingip "github.com/viletay/provider-vkcs/internal/controller/network/floatingip"
+	floatingipassociatenetwork "github.com/viletay/provider-vkcs/internal/controller/network/floatingipassociate"
+	network "github.com/viletay/provider-vkcs/internal/controller/network/network"
+	port "github.com/viletay/provider-vkcs/internal/controller/network/port"
+	router "github.com/viletay/provider-vkcs/internal/controller/network/router"
+	routerinterface "github.com/viletay/provider-vkcs/internal/controller/network/routerinterface"
+	routerroute "github.com/viletay/provider-vkcs/internal/controller/network/routerroute"
+	securitygroup "github.com/viletay/provider-vkcs/internal/controller/network/securitygroup"
+	securitygroupassociate "github.com/viletay/provider-vkcs/internal/controller/network/securitygroupassociate"
+	securitygrouprule "github.com/viletay/provider-vkcs/internal/controller/network/securitygrouprule"
+	subnet "github.com/viletay/provider-vkcs/internal/controller/network/subnet"
+	subnetroute "github.com/viletay/provider-vkcs/internal/controller/network/subnetroute"
 	providerconfig "github.com/viletay/provider-vkcs/internal/controller/providerconfig"
-	record "github.com/viletay/provider-vkcs/internal/controller/publicdns/record"
-	zone "github.com/viletay/provider-vkcs/internal/controller/publicdns/zone"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
 // the supplied manager.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
-		image.Setup,
-		floatingip.Setup,
 		floatingipassociate.Setup,
+		instance.Setup,
+		interfaceattach.Setup,
+		keypair.Setup,
+		servergroup.Setup,
+		volumeattach.Setup,
+		image.Setup,
+		snapshot.Setup,
+		volume.Setup,
+		record.Setup,
+		zone.Setup,
+		floatingip.Setup,
+		floatingipassociatenetwork.Setup,
 		network.Setup,
 		port.Setup,
-		portsecgroupassociate.Setup,
 		router.Setup,
 		routerinterface.Setup,
 		routerroute.Setup,
-		secgroup.Setup,
-		secgrouprule.Setup,
+		securitygroup.Setup,
+		securitygroupassociate.Setup,
+		securitygrouprule.Setup,
 		subnet.Setup,
 		subnetroute.Setup,
 		providerconfig.Setup,
-		record.Setup,
-		zone.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err

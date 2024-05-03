@@ -1,0 +1,32 @@
+apiVersion: compute.vkcs.upbound.io/v1alpha1
+kind: FloatingIPAssociate
+metadata:
+  annotations:
+    meta.upbound.io/example-id: compute/v1alpha1/floatingipassociate
+  labels:
+    testing.upbound.io/example-name: fip_basic
+  name: fip-basic
+spec:
+  forProvider:
+    floatingIpSelector:
+      matchLabels:
+        testing.upbound.io/example-name: fip_basic
+    instanceIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: basic
+
+---
+
+apiVersion: network.vkcs.upbound.io/v1alpha1
+kind: FloatingIP
+metadata:
+  annotations:
+    meta.upbound.io/example-id: compute/v1alpha1/floatingipassociate
+  labels:
+    testing.upbound.io/example-name: fip_basic
+  name: fip-basic
+spec:
+  forProvider:
+    poolSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example

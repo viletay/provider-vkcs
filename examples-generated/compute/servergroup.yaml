@@ -1,0 +1,13 @@
+apiVersion: compute.vkcs.upbound.io/v1alpha1
+kind: ServerGroup
+metadata:
+  annotations:
+    meta.upbound.io/example-id: compute/v1alpha1/servergroup
+  labels:
+    testing.upbound.io/example-name: cusom_group
+  name: cusom-group
+spec:
+  forProvider:
+    name: custom-group-tf-example
+    policies:
+    - anti-affinity

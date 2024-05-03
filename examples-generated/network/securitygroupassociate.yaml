@@ -1,0 +1,15 @@
+apiVersion: network.vkcs.upbound.io/v1alpha1
+kind: SecurityGroupAssociate
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/securitygroupassociate
+  labels:
+    testing.upbound.io/example-name: append_secgroups
+  name: append-secgroups
+spec:
+  forProvider:
+    portIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: persistent_etcd
+    securityGroupIdsRefs:
+    - name: etcd

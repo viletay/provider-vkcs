@@ -1,5 +1,5 @@
 ---
-apiVersion: images.crossplane.io/v1alpha1
+apiVersion: images.vkcs.upbound.io/v1alpha1
 kind: Image
 metadata:
   annotations:

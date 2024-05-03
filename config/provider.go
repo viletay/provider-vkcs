@@ -9,9 +9,11 @@ import (
 	_ "embed"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
-	"github.com/viletay/provider-vkcs/config/images"
-	"github.com/viletay/provider-vkcs/config/networking"
-	"github.com/viletay/provider-vkcs/config/publicdns"
+
+	"github.com/viletay/provider-vkcs/config/compute"
+	"github.com/viletay/provider-vkcs/config/disk"
+	"github.com/viletay/provider-vkcs/config/dns"
+	"github.com/viletay/provider-vkcs/config/network"
 )
 
 const (
@@ -28,7 +30,7 @@ var providerMetadata string
 // GetProvider returns provider configuration
 func GetProvider() *ujconfig.Provider {
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
-		ujconfig.WithRootGroup("crossplane.io"),
+		ujconfig.WithRootGroup("vkcs.upbound.io"),
 		ujconfig.WithIncludeList(ExternalNameConfigured()),
 		ujconfig.WithFeaturesPackage("internal/features"),
 		ujconfig.WithDefaultResourceOptions(
@@ -37,9 +39,10 @@ func GetProvider() *ujconfig.Provider {
 
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
-		publicdns.Configure,
-		images.Configure,
-		networking.Configure,
+		dns.Configure,
+		disk.Configure,
+		network.Configure,
+		compute.Configure,
 	} {
 		configure(pc)
 	}

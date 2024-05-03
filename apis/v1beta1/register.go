@@ -13,7 +13,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "vkcs.crossplane.io"
+	Group   = "vkcs.upbound.io"
 	Version = "v1beta1"
 )
 

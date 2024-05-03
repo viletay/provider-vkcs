@@ -1,0 +1,17 @@
+apiVersion: disk.vkcs.upbound.io/v1alpha1
+kind: Volume
+metadata:
+  annotations:
+    meta.upbound.io/example-id: disk/v1alpha1/volume
+  labels:
+    testing.upbound.io/example-name: data
+  name: data
+spec:
+  forProvider:
+    availabilityZone: GZ1
+    description: test volume
+    metadata:
+      foo: bar
+    name: data-tf-example
+    size: 1
+    volumeType: ceph-ssd
