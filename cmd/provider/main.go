@@ -7,13 +7,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/crossplane/crossplane-runtime/pkg/certificates"
-	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
 	"path/filepath"
 	"time"
 
 	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
+	"github.com/crossplane/crossplane-runtime/pkg/certificates"
 	xpcontroller "github.com/crossplane/crossplane-runtime/pkg/controller"
 	"github.com/crossplane/crossplane-runtime/pkg/feature"
 	"github.com/crossplane/crossplane-runtime/pkg/logging"
@@ -21,6 +20,7 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 	tjcontroller "github.com/crossplane/upjet/pkg/controller"
 	"github.com/crossplane/upjet/pkg/terraform"
+	"gopkg.in/alecthomas/kingpin.v2"
 	kerrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/leaderelection/resourcelock"

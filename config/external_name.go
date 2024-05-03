@@ -32,7 +32,6 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vkcs_compute_interface_attach":           config.IdentifierFromProvider,
 	"vkcs_compute_floatingip_associate":       config.IdentifierFromProvider,
 	"vkcs_compute_servergroup":                config.IdentifierFromProvider,
-	//config.TemplatedStringAsIdentifier("", "{{ .parameters.instance_id }}/{{ .external_name }}"),
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the
