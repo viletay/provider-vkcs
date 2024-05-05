@@ -32,6 +32,9 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vkcs_compute_interface_attach":           config.IdentifierFromProvider,
 	"vkcs_compute_floatingip_associate":       config.IdentifierFromProvider,
 	"vkcs_compute_servergroup":                config.IdentifierFromProvider,
+	"vkcs_kubernetes_cluster":                 config.IdentifierFromProvider,
+	"vkcs_kubernetes_node_group":              config.IdentifierFromProvider,
+	"vkcs_kubernetes_clustertemplate":         config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

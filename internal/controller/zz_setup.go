@@ -20,6 +20,8 @@ import (
 	volume "github.com/viletay/provider-vkcs/internal/controller/disk/volume"
 	record "github.com/viletay/provider-vkcs/internal/controller/dns/record"
 	zone "github.com/viletay/provider-vkcs/internal/controller/dns/zone"
+	cluster "github.com/viletay/provider-vkcs/internal/controller/kubernetes/cluster"
+	nodegroup "github.com/viletay/provider-vkcs/internal/controller/kubernetes/nodegroup"
 	floatingip "github.com/viletay/provider-vkcs/internal/controller/network/floatingip"
 	floatingipassociatenetwork "github.com/viletay/provider-vkcs/internal/controller/network/floatingipassociate"
 	network "github.com/viletay/provider-vkcs/internal/controller/network/network"
@@ -50,6 +52,8 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		volume.Setup,
 		record.Setup,
 		zone.Setup,
+		cluster.Setup,
+		nodegroup.Setup,
 		floatingip.Setup,
 		floatingipassociatenetwork.Setup,
 		network.Setup,

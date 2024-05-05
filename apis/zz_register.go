@@ -17,6 +17,7 @@ import (
 	v1alpha1 "github.com/viletay/provider-vkcs/apis/compute/v1alpha1"
 	v1alpha1disk "github.com/viletay/provider-vkcs/apis/disk/v1alpha1"
 	v1alpha1dns "github.com/viletay/provider-vkcs/apis/dns/v1alpha1"
+	v1alpha1kubernetes "github.com/viletay/provider-vkcs/apis/kubernetes/v1alpha1"
 	v1alpha1network "github.com/viletay/provider-vkcs/apis/network/v1alpha1"
 	v1alpha1apis "github.com/viletay/provider-vkcs/apis/v1alpha1"
 	v1beta1 "github.com/viletay/provider-vkcs/apis/v1beta1"
@@ -28,6 +29,7 @@ func init() {
 		v1alpha1.SchemeBuilder.AddToScheme,
 		v1alpha1disk.SchemeBuilder.AddToScheme,
 		v1alpha1dns.SchemeBuilder.AddToScheme,
+		v1alpha1kubernetes.SchemeBuilder.AddToScheme,
 		v1alpha1network.SchemeBuilder.AddToScheme,
 		v1alpha1apis.SchemeBuilder.AddToScheme,
 		v1beta1.SchemeBuilder.AddToScheme,
