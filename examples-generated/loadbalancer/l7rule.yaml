@@ -1,0 +1,16 @@
+apiVersion: loadbalancer.vkcs.upbound.io/v1alpha1
+kind: L7Rule
+metadata:
+  annotations:
+    meta.upbound.io/example-id: loadbalancer/v1alpha1/l7rule
+  labels:
+    testing.upbound.io/example-name: app_api_redirect
+  name: app-api-redirect
+spec:
+  forProvider:
+    compareType: EQUAL_TO
+    l7policyIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: app_redirect
+    type: PATH
+    value: /api

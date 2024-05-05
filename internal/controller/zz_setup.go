@@ -22,6 +22,13 @@ import (
 	zone "github.com/viletay/provider-vkcs/internal/controller/dns/zone"
 	cluster "github.com/viletay/provider-vkcs/internal/controller/kubernetes/cluster"
 	nodegroup "github.com/viletay/provider-vkcs/internal/controller/kubernetes/nodegroup"
+	l7policy "github.com/viletay/provider-vkcs/internal/controller/loadbalancer/l7policy"
+	l7rule "github.com/viletay/provider-vkcs/internal/controller/loadbalancer/l7rule"
+	listener "github.com/viletay/provider-vkcs/internal/controller/loadbalancer/listener"
+	loadbalancer "github.com/viletay/provider-vkcs/internal/controller/loadbalancer/loadbalancer"
+	member "github.com/viletay/provider-vkcs/internal/controller/loadbalancer/member"
+	monitor "github.com/viletay/provider-vkcs/internal/controller/loadbalancer/monitor"
+	pool "github.com/viletay/provider-vkcs/internal/controller/loadbalancer/pool"
 	floatingip "github.com/viletay/provider-vkcs/internal/controller/network/floatingip"
 	floatingipassociatenetwork "github.com/viletay/provider-vkcs/internal/controller/network/floatingipassociate"
 	network "github.com/viletay/provider-vkcs/internal/controller/network/network"
@@ -54,6 +61,13 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		zone.Setup,
 		cluster.Setup,
 		nodegroup.Setup,
+		l7policy.Setup,
+		l7rule.Setup,
+		listener.Setup,
+		loadbalancer.Setup,
+		member.Setup,
+		monitor.Setup,
+		pool.Setup,
 		floatingip.Setup,
 		floatingipassociatenetwork.Setup,
 		network.Setup,

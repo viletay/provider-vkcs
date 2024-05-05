@@ -1,0 +1,17 @@
+apiVersion: loadbalancer.vkcs.upbound.io/v1alpha1
+kind: LoadBalancer
+metadata:
+  annotations:
+    meta.upbound.io/example-id: loadbalancer/v1alpha1/loadbalancer
+  labels:
+    testing.upbound.io/example-name: app
+  name: app
+spec:
+  forProvider:
+    description: Loadbalancer for resources/datasources testing
+    name: app-tf-example
+    tags:
+    - app-front-tf-example
+    vipSubnetIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: app

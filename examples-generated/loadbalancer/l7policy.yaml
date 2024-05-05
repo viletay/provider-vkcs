@@ -1,0 +1,20 @@
+apiVersion: loadbalancer.vkcs.upbound.io/v1alpha1
+kind: L7Policy
+metadata:
+  annotations:
+    meta.upbound.io/example-id: loadbalancer/v1alpha1/l7policy
+  labels:
+    testing.upbound.io/example-name: app_redirect
+  name: app-redirect
+spec:
+  forProvider:
+    action: REDIRECT_TO_POOL
+    description: Policy for tf lb testing
+    listenerIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: app_http
+    name: http-tf-example
+    position: 1
+    redirectPoolIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: http
