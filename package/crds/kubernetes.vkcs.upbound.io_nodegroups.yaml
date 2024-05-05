@@ -1,0 +1,709 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.13.0
+  name: nodegroups.kubernetes.vkcs.upbound.io
+spec:
+  group: kubernetes.vkcs.upbound.io
+  names:
+    categories:
+    - crossplane
+    - managed
+    - vkcs
+    kind: NodeGroup
+    listKind: NodeGroupList
+    plural: nodegroups
+    singular: nodegroup
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Synced')].status
+      name: SYNCED
+      type: string
+    - jsonPath: .metadata.annotations.crossplane\.io/external-name
+      name: EXTERNAL-NAME
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: NodeGroup is the Schema for the NodeGroups API. Manages clusters
+          node group.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: NodeGroupSpec defines the desired state of NodeGroup
+            properties:
+              deletionPolicy:
+                default: Delete
+                description: 'DeletionPolicy specifies what will happen to the underlying
+                  external when this managed resource is deleted - either "Delete"
+                  or "Orphan" the external resource. This field is planned to be deprecated
+                  in favor of the ManagementPolicies field in a future release. Currently,
+                  both could be set independently and non-default values would be
+                  honored if the feature flag is enabled. See the design doc for more
+                  information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223'
+                enum:
+                - Orphan
+                - Delete
+                type: string
+              forProvider:
+                properties:
+                  autoscalingEnabled:
+                    description: optional boolean →  Determines whether the autoscaling
+                      is enabled. Determines whether the autoscaling is enabled.
+                    type: boolean
+                  availabilityZones:
+                    description: 'optional string →  The list of availability zones
+                      of the node group. Zones MS1 and  GZ1 are available. By default,
+                      node group is being created at cluster''s zone. Important: Receiving
+                      default AZ add it manually to your main.tf config to sync it
+                      with state to avoid node groups force recreation in the future.
+                      The list of availability zones of the node group. Zones `MS1`
+                      and  `GZ1` are available. By default, node group is being created
+                      at cluster''s zone. **Important:** Receiving default AZ add
+                      it manually to your main.tf config to sync it with state to
+                      avoid node groups force recreation in the future.'
+                    items:
+                      type: string
+                    type: array
+                  clusterId:
+                    description: required string →  The UUID of the existing cluster.
+                      The UUID of the existing cluster.
+                    type: string
+                  clusterIdRef:
+                    description: Reference to a Cluster to populate clusterId.
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                      policy:
+                        description: Policies for referencing.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: Resolution specifies whether resolution of
+                              this reference is required. The default is 'Required',
+                              which means the reconcile will fail if the reference
+                              cannot be resolved. 'Optional' means this reference
+                              will be a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: Resolve specifies when this reference should
+                              be resolved. The default is 'IfNotPresent', which will
+                              attempt to resolve the reference only when the corresponding
+                              field is not present. Use 'Always' to resolve the reference
+                              on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    required:
+                    - name
+                    type: object
+                  clusterIdSelector:
+                    description: Selector for a Cluster to populate clusterId.
+                    properties:
+                      matchControllerRef:
+                        description: MatchControllerRef ensures an object with the
+                          same controller reference as the selecting object is selected.
+                        type: boolean
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: MatchLabels ensures an object with matching labels
+                          is selected.
+                        type: object
+                      policy:
+                        description: Policies for selection.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: Resolution specifies whether resolution of
+                              this reference is required. The default is 'Required',
+                              which means the reconcile will fail if the reference
+                              cannot be resolved. 'Optional' means this reference
+                              will be a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: Resolve specifies when this reference should
+                              be resolved. The default is 'IfNotPresent', which will
+                              attempt to resolve the reference only when the corresponding
+                              field is not present. Use 'Always' to resolve the reference
+                              on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    type: object
+                  flavorId:
+                    description: place update and may not be provided in custom deployments.
+                      In this case, contact support for clarification. The flavor
+                      UUID of this node group. _note_ Starting with v0.5.1, changing
+                      this attribute does not force the resource to be recreated,
+                      which requires an in-place update and may not be provided in
+                      custom deployments. In this case, contact support for clarification.
+                    type: string
+                  labels:
+                    description: optional →  The list of objects representing representing
+                      additional properties of the node group. Each object should
+                      have attribute "key". Object may also have optional attribute
+                      "value". The list of objects representing representing additional
+                      properties of the node group. Each object should have attribute
+                      "key". Object may also have optional attribute "value".
+                    items:
+                      properties:
+                        key:
+                          description: required string
+                          type: string
+                        value:
+                          description: optional string
+                          type: string
+                      type: object
+                    type: array
+                  maxNodeUnavailable:
+                    description: optional number →  The maximum number of nodes that
+                      can fail during an upgrade. The default value is 25 percent.
+                      The maximum number of nodes that can fail during an upgrade.
+                      The default value is 25 percent.
+                    type: number
+                  maxNodes:
+                    description: optional number →  The maximum allowed nodes for
+                      this node group. The maximum allowed nodes for this node group.
+                    type: number
+                  minNodes:
+                    description: optional number →  The minimum allowed nodes for
+                      this node group. Default to 0 if not set. The minimum allowed
+                      nodes for this node group. Default to 0 if not set.
+                    type: number
+                  name:
+                    description: required string →  The name of node group to create.
+                      Changing this will force to create a new node group. The name
+                      of node group to create. Changing this will force to create
+                      a new node group.
+                    type: string
+                  nodeCount:
+                    description: required number →  The node count for this node group.
+                      Should be greater than 0. If autoscaling_enabled parameter is
+                      set, this attribute will be ignored during update. The node
+                      count for this node group. Should be greater than 0. If `autoscaling_enabled`
+                      parameter is set, this attribute will be ignored during update.
+                    type: number
+                  taints:
+                    description: 'optional →  The list of objects representing node
+                      group taints. Each object should have following attributes:
+                      key, value, effect. The list of objects representing node group
+                      taints. Each object should have following attributes: key, value,
+                      effect.'
+                    items:
+                      properties:
+                        effect:
+                          description: required string
+                          type: string
+                        key:
+                          description: required string
+                          type: string
+                        value:
+                          description: optional string
+                          type: string
+                      type: object
+                    type: array
+                  volumeSize:
+                    description: optional number →  The size in GB for volume to load
+                      nodes from. Changing this will force to create a new node group.
+                      The size in GB for volume to load nodes from. Changing this
+                      will force to create a new node group.
+                    type: number
+                  volumeType:
+                    description: optional string →  The volume type to load nodes
+                      from. Changing this will force to create a new node group. The
+                      volume type to load nodes from. Changing this will force to
+                      create a new node group.
+                    type: string
+                type: object
+              initProvider:
+                description: THIS IS A BETA FIELD. It will be honored unless the Management
+                  Policies feature flag is disabled. InitProvider holds the same fields
+                  as ForProvider, with the exception of Identifier and other resource
+                  reference fields. The fields that are in InitProvider are merged
+                  into ForProvider when the resource is created. The same fields are
+                  also added to the terraform ignore_changes hook, to avoid updating
+                  them after creation. This is useful for fields that are required
+                  on creation, but we do not desire to update them after creation,
+                  for example because of an external controller is managing them,
+                  like an autoscaler.
+                properties:
+                  autoscalingEnabled:
+                    description: optional boolean →  Determines whether the autoscaling
+                      is enabled. Determines whether the autoscaling is enabled.
+                    type: boolean
+                  availabilityZones:
+                    description: 'optional string →  The list of availability zones
+                      of the node group. Zones MS1 and  GZ1 are available. By default,
+                      node group is being created at cluster''s zone. Important: Receiving
+                      default AZ add it manually to your main.tf config to sync it
+                      with state to avoid node groups force recreation in the future.
+                      The list of availability zones of the node group. Zones `MS1`
+                      and  `GZ1` are available. By default, node group is being created
+                      at cluster''s zone. **Important:** Receiving default AZ add
+                      it manually to your main.tf config to sync it with state to
+                      avoid node groups force recreation in the future.'
+                    items:
+                      type: string
+                    type: array
+                  flavorId:
+                    description: place update and may not be provided in custom deployments.
+                      In this case, contact support for clarification. The flavor
+                      UUID of this node group. _note_ Starting with v0.5.1, changing
+                      this attribute does not force the resource to be recreated,
+                      which requires an in-place update and may not be provided in
+                      custom deployments. In this case, contact support for clarification.
+                    type: string
+                  labels:
+                    description: optional →  The list of objects representing representing
+                      additional properties of the node group. Each object should
+                      have attribute "key". Object may also have optional attribute
+                      "value". The list of objects representing representing additional
+                      properties of the node group. Each object should have attribute
+                      "key". Object may also have optional attribute "value".
+                    items:
+                      properties:
+                        key:
+                          description: required string
+                          type: string
+                        value:
+                          description: optional string
+                          type: string
+                      type: object
+                    type: array
+                  maxNodeUnavailable:
+                    description: optional number →  The maximum number of nodes that
+                      can fail during an upgrade. The default value is 25 percent.
+                      The maximum number of nodes that can fail during an upgrade.
+                      The default value is 25 percent.
+                    type: number
+                  maxNodes:
+                    description: optional number →  The maximum allowed nodes for
+                      this node group. The maximum allowed nodes for this node group.
+                    type: number
+                  minNodes:
+                    description: optional number →  The minimum allowed nodes for
+                      this node group. Default to 0 if not set. The minimum allowed
+                      nodes for this node group. Default to 0 if not set.
+                    type: number
+                  name:
+                    description: required string →  The name of node group to create.
+                      Changing this will force to create a new node group. The name
+                      of node group to create. Changing this will force to create
+                      a new node group.
+                    type: string
+                  nodeCount:
+                    description: required number →  The node count for this node group.
+                      Should be greater than 0. If autoscaling_enabled parameter is
+                      set, this attribute will be ignored during update. The node
+                      count for this node group. Should be greater than 0. If `autoscaling_enabled`
+                      parameter is set, this attribute will be ignored during update.
+                    type: number
+                  taints:
+                    description: 'optional →  The list of objects representing node
+                      group taints. Each object should have following attributes:
+                      key, value, effect. The list of objects representing node group
+                      taints. Each object should have following attributes: key, value,
+                      effect.'
+                    items:
+                      properties:
+                        effect:
+                          description: required string
+                          type: string
+                        key:
+                          description: required string
+                          type: string
+                        value:
+                          description: optional string
+                          type: string
+                      type: object
+                    type: array
+                  volumeSize:
+                    description: optional number →  The size in GB for volume to load
+                      nodes from. Changing this will force to create a new node group.
+                      The size in GB for volume to load nodes from. Changing this
+                      will force to create a new node group.
+                    type: number
+                  volumeType:
+                    description: optional string →  The volume type to load nodes
+                      from. Changing this will force to create a new node group. The
+                      volume type to load nodes from. Changing this will force to
+                      create a new node group.
+                    type: string
+                type: object
+              managementPolicies:
+                default:
+                - '*'
+                description: 'THIS IS A BETA FIELD. It is on by default but can be
+                  opted out through a Crossplane feature flag. ManagementPolicies
+                  specify the array of actions Crossplane is allowed to take on the
+                  managed and external resources. This field is planned to replace
+                  the DeletionPolicy field in a future release. Currently, both could
+                  be set independently and non-default values would be honored if
+                  the feature flag is enabled. If both are custom, the DeletionPolicy
+                  field will be ignored. See the design doc for more information:
+                  https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
+                  and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md'
+                items:
+                  description: A ManagementAction represents an action that the Crossplane
+                    controllers can take on an external resource.
+                  enum:
+                  - Observe
+                  - Create
+                  - Update
+                  - Delete
+                  - LateInitialize
+                  - '*'
+                  type: string
+                type: array
+              providerConfigRef:
+                default:
+                  name: default
+                description: ProviderConfigReference specifies how the provider that
+                  will be used to create, observe, update, and delete this managed
+                  resource should be configured.
+                properties:
+                  name:
+                    description: Name of the referenced object.
+                    type: string
+                  policy:
+                    description: Policies for referencing.
+                    properties:
+                      resolution:
+                        default: Required
+                        description: Resolution specifies whether resolution of this
+                          reference is required. The default is 'Required', which
+                          means the reconcile will fail if the reference cannot be
+                          resolved. 'Optional' means this reference will be a no-op
+                          if it cannot be resolved.
+                        enum:
+                        - Required
+                        - Optional
+                        type: string
+                      resolve:
+                        description: Resolve specifies when this reference should
+                          be resolved. The default is 'IfNotPresent', which will attempt
+                          to resolve the reference only when the corresponding field
+                          is not present. Use 'Always' to resolve the reference on
+                          every reconcile.
+                        enum:
+                        - Always
+                        - IfNotPresent
+                        type: string
+                    type: object
+                required:
+                - name
+                type: object
+              publishConnectionDetailsTo:
+                description: PublishConnectionDetailsTo specifies the connection secret
+                  config which contains a name, metadata and a reference to secret
+                  store config to which any connection details for this managed resource
+                  should be written. Connection details frequently include the endpoint,
+                  username, and password required to connect to the managed resource.
+                properties:
+                  configRef:
+                    default:
+                      name: default
+                    description: SecretStoreConfigRef specifies which secret store
+                      config should be used for this ConnectionSecret.
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                      policy:
+                        description: Policies for referencing.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: Resolution specifies whether resolution of
+                              this reference is required. The default is 'Required',
+                              which means the reconcile will fail if the reference
+                              cannot be resolved. 'Optional' means this reference
+                              will be a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: Resolve specifies when this reference should
+                              be resolved. The default is 'IfNotPresent', which will
+                              attempt to resolve the reference only when the corresponding
+                              field is not present. Use 'Always' to resolve the reference
+                              on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    required:
+                    - name
+                    type: object
+                  metadata:
+                    description: Metadata is the metadata for connection secret.
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        description: Annotations are the annotations to be added to
+                          connection secret. - For Kubernetes secrets, this will be
+                          used as "metadata.annotations". - It is up to Secret Store
+                          implementation for others store types.
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        description: Labels are the labels/tags to be added to connection
+                          secret. - For Kubernetes secrets, this will be used as "metadata.labels".
+                          - It is up to Secret Store implementation for others store
+                          types.
+                        type: object
+                      type:
+                        description: Type is the SecretType for the connection secret.
+                          - Only valid for Kubernetes Secret Stores.
+                        type: string
+                    type: object
+                  name:
+                    description: Name is the name of the connection secret.
+                    type: string
+                required:
+                - name
+                type: object
+              writeConnectionSecretToRef:
+                description: WriteConnectionSecretToReference specifies the namespace
+                  and name of a Secret to which any connection details for this managed
+                  resource should be written. Connection details frequently include
+                  the endpoint, username, and password required to connect to the
+                  managed resource. This field is planned to be replaced in a future
+                  release in favor of PublishConnectionDetailsTo. Currently, both
+                  could be set independently and connection details would be published
+                  to both without affecting each other.
+                properties:
+                  name:
+                    description: Name of the secret.
+                    type: string
+                  namespace:
+                    description: Namespace of the secret.
+                    type: string
+                required:
+                - name
+                - namespace
+                type: object
+            required:
+            - forProvider
+            type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.name is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
+                || (has(self.initProvider) && has(self.initProvider.name))'
+            - message: spec.forProvider.nodeCount is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.nodeCount)
+                || (has(self.initProvider) && has(self.initProvider.nodeCount))'
+          status:
+            description: NodeGroupStatus defines the observed state of NodeGroup.
+            properties:
+              atProvider:
+                properties:
+                  autoscalingEnabled:
+                    description: optional boolean →  Determines whether the autoscaling
+                      is enabled. Determines whether the autoscaling is enabled.
+                    type: boolean
+                  availabilityZones:
+                    description: 'optional string →  The list of availability zones
+                      of the node group. Zones MS1 and  GZ1 are available. By default,
+                      node group is being created at cluster''s zone. Important: Receiving
+                      default AZ add it manually to your main.tf config to sync it
+                      with state to avoid node groups force recreation in the future.
+                      The list of availability zones of the node group. Zones `MS1`
+                      and  `GZ1` are available. By default, node group is being created
+                      at cluster''s zone. **Important:** Receiving default AZ add
+                      it manually to your main.tf config to sync it with state to
+                      avoid node groups force recreation in the future.'
+                    items:
+                      type: string
+                    type: array
+                  clusterId:
+                    description: required string →  The UUID of the existing cluster.
+                      The UUID of the existing cluster.
+                    type: string
+                  createdAt:
+                    description: string →  The time at which node group was created.
+                      The time at which node group was created.
+                    type: string
+                  flavorId:
+                    description: place update and may not be provided in custom deployments.
+                      In this case, contact support for clarification. The flavor
+                      UUID of this node group. _note_ Starting with v0.5.1, changing
+                      this attribute does not force the resource to be recreated,
+                      which requires an in-place update and may not be provided in
+                      custom deployments. In this case, contact support for clarification.
+                    type: string
+                  id:
+                    description: string →  ID of the resource.
+                    type: string
+                  labels:
+                    description: optional →  The list of objects representing representing
+                      additional properties of the node group. Each object should
+                      have attribute "key". Object may also have optional attribute
+                      "value". The list of objects representing representing additional
+                      properties of the node group. Each object should have attribute
+                      "key". Object may also have optional attribute "value".
+                    items:
+                      properties:
+                        key:
+                          description: required string
+                          type: string
+                        value:
+                          description: optional string
+                          type: string
+                      type: object
+                    type: array
+                  maxNodeUnavailable:
+                    description: optional number →  The maximum number of nodes that
+                      can fail during an upgrade. The default value is 25 percent.
+                      The maximum number of nodes that can fail during an upgrade.
+                      The default value is 25 percent.
+                    type: number
+                  maxNodes:
+                    description: optional number →  The maximum allowed nodes for
+                      this node group. The maximum allowed nodes for this node group.
+                    type: number
+                  minNodes:
+                    description: optional number →  The minimum allowed nodes for
+                      this node group. Default to 0 if not set. The minimum allowed
+                      nodes for this node group. Default to 0 if not set.
+                    type: number
+                  name:
+                    description: required string →  The name of node group to create.
+                      Changing this will force to create a new node group. The name
+                      of node group to create. Changing this will force to create
+                      a new node group.
+                    type: string
+                  nodeCount:
+                    description: required number →  The node count for this node group.
+                      Should be greater than 0. If autoscaling_enabled parameter is
+                      set, this attribute will be ignored during update. The node
+                      count for this node group. Should be greater than 0. If `autoscaling_enabled`
+                      parameter is set, this attribute will be ignored during update.
+                    type: number
+                  state:
+                    description: string →  Determines current state of node group
+                      (RUNNING, SHUTOFF, ERROR). Determines current state of node
+                      group (RUNNING, SHUTOFF, ERROR).
+                    type: string
+                  taints:
+                    description: 'optional →  The list of objects representing node
+                      group taints. Each object should have following attributes:
+                      key, value, effect. The list of objects representing node group
+                      taints. Each object should have following attributes: key, value,
+                      effect.'
+                    items:
+                      properties:
+                        effect:
+                          description: required string
+                          type: string
+                        key:
+                          description: required string
+                          type: string
+                        value:
+                          description: optional string
+                          type: string
+                      type: object
+                    type: array
+                  updatedAt:
+                    description: string →  The time at which node group was created.
+                      The time at which node group was created.
+                    type: string
+                  uuid:
+                    description: string →  The UUID of the cluster's node group. The
+                      UUID of the cluster's node group.
+                    type: string
+                  volumeSize:
+                    description: optional number →  The size in GB for volume to load
+                      nodes from. Changing this will force to create a new node group.
+                      The size in GB for volume to load nodes from. Changing this
+                      will force to create a new node group.
+                    type: number
+                  volumeType:
+                    description: optional string →  The volume type to load nodes
+                      from. Changing this will force to create a new node group. The
+                      volume type to load nodes from. Changing this will force to
+                      create a new node group.
+                    type: string
+                type: object
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  description: A Condition that may apply to a resource.
+                  properties:
+                    lastTransitionTime:
+                      description: LastTransitionTime is the last time this condition
+                        transitioned from one status to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A Message containing details about this condition's
+                        last transition from one status to another, if any.
+                      type: string
+                    reason:
+                      description: A Reason for this condition's last transition from
+                        one status to another.
+                      type: string
+                    status:
+                      description: Status of this condition; is it currently True,
+                        False, or Unknown?
+                      type: string
+                    type:
+                      description: Type of this condition. At most one of each condition
+                        type may apply to a resource at any point in time.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

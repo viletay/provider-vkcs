@@ -1,0 +1,29 @@
+apiVersion: kubernetes.vkcs.upbound.io/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    meta.upbound.io/example-id: kubernetes/v1alpha1/cluster
+  labels:
+    testing.upbound.io/example-name: k8s-cluster
+  name: k8s-cluster
+spec:
+  forProvider:
+    availabilityZone: MS1
+    clusterTemplateId: ${data.vkcs_kubernetes_clustertemplate.k8s_24.id}
+    floatingIpEnabled: true
+    labels:
+      clean_volumes: "true"
+      cloud_monitoring: "true"
+      cluster_node_volume_type: ceph-ssd
+      kube_log_level: "2"
+      master_volume_size: "100"
+    masterCount: 1
+    masterFlavor: ${data.vkcs_compute_flavor.basic.id}
+    name: k8s-cluster
+    networkIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: app
+    subnetIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: app
+    syncSecurityPolicy: true

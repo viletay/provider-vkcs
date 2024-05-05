@@ -7,6 +7,7 @@ package config
 import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
+	"github.com/viletay/provider-vkcs/config/kubernetes"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 
@@ -43,6 +44,7 @@ func GetProvider() *ujconfig.Provider {
 		disk.Configure,
 		network.Configure,
 		compute.Configure,
+		kubernetes.Configure,
 	} {
 		configure(pc)
 	}
