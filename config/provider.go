@@ -7,13 +7,14 @@ package config
 import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
-	"github.com/viletay/provider-vkcs/config/kubernetes"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 
 	"github.com/viletay/provider-vkcs/config/compute"
 	"github.com/viletay/provider-vkcs/config/disk"
 	"github.com/viletay/provider-vkcs/config/dns"
+	"github.com/viletay/provider-vkcs/config/kubernetes"
+	"github.com/viletay/provider-vkcs/config/loadbalancer"
 	"github.com/viletay/provider-vkcs/config/network"
 )
 
@@ -45,6 +46,7 @@ func GetProvider() *ujconfig.Provider {
 		network.Configure,
 		compute.Configure,
 		kubernetes.Configure,
+		loadbalancer.Configure,
 	} {
 		configure(pc)
 	}

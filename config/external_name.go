@@ -35,6 +35,13 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vkcs_kubernetes_cluster":                 config.IdentifierFromProvider,
 	"vkcs_kubernetes_node_group":              config.IdentifierFromProvider,
 	"vkcs_kubernetes_clustertemplate":         config.IdentifierFromProvider,
+	"vkcs_lb_loadbalancer":                    config.IdentifierFromProvider,
+	"vkcs_lb_listener":                        config.IdentifierFromProvider,
+	"vkcs_lb_pool":                            config.IdentifierFromProvider,
+	"vkcs_lb_member":                          config.IdentifierFromProvider,
+	"vkcs_lb_monitor":                         config.IdentifierFromProvider,
+	"vkcs_lb_l7policy":                        config.IdentifierFromProvider,
+	"vkcs_lb_l7rule":                          config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

@@ -1,0 +1,15 @@
+apiVersion: loadbalancer.vkcs.upbound.io/v1alpha1
+kind: Member
+metadata:
+  annotations:
+    meta.upbound.io/example-id: loadbalancer/v1alpha1/member
+  labels:
+    testing.upbound.io/example-name: front_http
+  name: front-http
+spec:
+  forProvider:
+    address: 192.168.199.110
+    poolIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: http
+    protocolPort: 8080
