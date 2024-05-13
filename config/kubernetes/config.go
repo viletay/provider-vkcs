@@ -24,6 +24,8 @@ func Configure(p *ujconfig.Provider) {
 		r.References["cluster_id"] = ujconfig.Reference{
 			Type: "Cluster",
 		}
+		r.References["flavor_id"] = ujconfig.Reference{
+			Type: "github.com/crossplane-contrib/provider-openstack/apis/compute/v1alpha1.FlavorV2",
+		}
 	})
-
 }

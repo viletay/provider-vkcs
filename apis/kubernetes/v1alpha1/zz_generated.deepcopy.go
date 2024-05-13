@@ -716,11 +716,6 @@ func (in *NodeGroupInitParameters) DeepCopyInto(out *NodeGroupInitParameters) {
 			}
 		}
 	}
-	if in.FlavorID != nil {
-		in, out := &in.FlavorID, &out.FlavorID
-		*out = new(string)
-		**out = **in
-	}
 	if in.Labels != nil {
 		in, out := &in.Labels, &out.Labels
 		*out = make([]LabelsInitParameters, len(*in))
@@ -967,6 +962,16 @@ func (in *NodeGroupParameters) DeepCopyInto(out *NodeGroupParameters) {
 		in, out := &in.FlavorID, &out.FlavorID
 		*out = new(string)
 		**out = **in
+	}
+	if in.FlavorIDRef != nil {
+		in, out := &in.FlavorIDRef, &out.FlavorIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.FlavorIDSelector != nil {
+		in, out := &in.FlavorIDSelector, &out.FlavorIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Labels != nil {
 		in, out := &in.Labels, &out.Labels

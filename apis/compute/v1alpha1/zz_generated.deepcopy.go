@@ -494,11 +494,6 @@ func (in *InstanceInitParameters) DeepCopyInto(out *InstanceInitParameters) {
 		*out = new(bool)
 		**out = **in
 	}
-	if in.FlavorID != nil {
-		in, out := &in.FlavorID, &out.FlavorID
-		*out = new(string)
-		**out = **in
-	}
 	if in.FlavorName != nil {
 		in, out := &in.FlavorName, &out.FlavorName
 		*out = new(string)
@@ -888,6 +883,16 @@ func (in *InstanceParameters) DeepCopyInto(out *InstanceParameters) {
 		in, out := &in.FlavorID, &out.FlavorID
 		*out = new(string)
 		**out = **in
+	}
+	if in.FlavorIDRef != nil {
+		in, out := &in.FlavorIDRef, &out.FlavorIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.FlavorIDSelector != nil {
+		in, out := &in.FlavorIDSelector, &out.FlavorIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.FlavorName != nil {
 		in, out := &in.FlavorName, &out.FlavorName
