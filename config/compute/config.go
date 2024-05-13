@@ -23,7 +23,9 @@ func Configure(p *ujconfig.Provider) {
 		r.References["network.uuid"] = ujconfig.Reference{
 			Type: "github.com/viletay/provider-vkcs/apis/network/v1alpha1.Network",
 		}
-
+		r.References["flavor_id"] = ujconfig.Reference{
+			Type: "github.com/crossplane-contrib/provider-openstack/apis/compute/v1alpha1.FlavorV2",
+		}
 	})
 	p.AddResourceConfigurator("vkcs_compute_volume_attach", func(r *ujconfig.Resource) {
 		r.ExternalName = ujconfig.IdentifierFromProvider

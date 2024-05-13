@@ -58,10 +58,6 @@ type NodeGroupInitParameters struct {
 	// **Important:** Receiving default AZ add it manually to your main.tf config to sync it with state to avoid node groups force recreation in the future.
 	AvailabilityZones []*string `json:"availabilityZones,omitempty" tf:"availability_zones,omitempty"`
 
-	// place update and may not be provided in custom deployments. In this case, contact support for clarification.
-	// The flavor UUID of this node group. _note_ Starting with v0.5.1, changing this attribute does not force the resource to be recreated, which requires an in-place update and may not be provided in custom deployments. In this case, contact support for clarification.
-	FlavorID *string `json:"flavorId,omitempty" tf:"flavor_id,omitempty"`
-
 	// optional →  The list of objects representing representing additional properties of the node group. Each object should have attribute "key". Object may also have optional attribute "value".
 	// The list of objects representing representing additional properties of the node group. Each object should have attribute "key". Object may also have optional attribute "value".
 	Labels []LabelsInitParameters `json:"labels,omitempty" tf:"labels,omitempty"`
@@ -205,8 +201,17 @@ type NodeGroupParameters struct {
 
 	// place update and may not be provided in custom deployments. In this case, contact support for clarification.
 	// The flavor UUID of this node group. _note_ Starting with v0.5.1, changing this attribute does not force the resource to be recreated, which requires an in-place update and may not be provided in custom deployments. In this case, contact support for clarification.
+	// +crossplane:generate:reference:type=github.com/crossplane-contrib/provider-openstack/apis/compute/v1alpha1.FlavorV2
 	// +kubebuilder:validation:Optional
 	FlavorID *string `json:"flavorId,omitempty" tf:"flavor_id,omitempty"`
+
+	// Reference to a FlavorV2 in compute to populate flavorId.
+	// +kubebuilder:validation:Optional
+	FlavorIDRef *v1.Reference `json:"flavorIdRef,omitempty" tf:"-"`
+
+	// Selector for a FlavorV2 in compute to populate flavorId.
+	// +kubebuilder:validation:Optional
+	FlavorIDSelector *v1.Selector `json:"flavorIdSelector,omitempty" tf:"-"`
 
 	// optional →  The list of objects representing representing additional properties of the node group. Each object should have attribute "key". Object may also have optional attribute "value".
 	// The list of objects representing representing additional properties of the node group. Each object should have attribute "key". Object may also have optional attribute "value".

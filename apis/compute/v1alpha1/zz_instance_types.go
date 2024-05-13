@@ -176,10 +176,6 @@ type InstanceInitParameters struct {
 	// Whether to use the config_drive feature to configure the instance. Changing this creates a new server.
 	ConfigDrive *bool `json:"configDrive,omitempty" tf:"config_drive,omitempty"`
 
-	// optional string →  The flavor ID of the desired flavor for the server. Required if flavor_name is empty. Changing this resizes the existing server.
-	// The flavor ID of the desired flavor for the server. Required if `flavor_name` is empty. Changing this resizes the existing server.
-	FlavorID *string `json:"flavorId,omitempty" tf:"flavor_id,omitempty"`
-
 	// optional string →  The name of the desired flavor for the server. Required if flavor_id is empty. Changing this resizes the existing server.
 	// The name of the desired flavor for the server. Required if `flavor_id` is empty. Changing this resizes the existing server.
 	FlavorName *string `json:"flavorName,omitempty" tf:"flavor_name,omitempty"`
@@ -382,8 +378,17 @@ type InstanceParameters struct {
 
 	// optional string →  The flavor ID of the desired flavor for the server. Required if flavor_name is empty. Changing this resizes the existing server.
 	// The flavor ID of the desired flavor for the server. Required if `flavor_name` is empty. Changing this resizes the existing server.
+	// +crossplane:generate:reference:type=github.com/crossplane-contrib/provider-openstack/apis/compute/v1alpha1.FlavorV2
 	// +kubebuilder:validation:Optional
 	FlavorID *string `json:"flavorId,omitempty" tf:"flavor_id,omitempty"`
+
+	// Reference to a FlavorV2 in compute to populate flavorId.
+	// +kubebuilder:validation:Optional
+	FlavorIDRef *v1.Reference `json:"flavorIdRef,omitempty" tf:"-"`
+
+	// Selector for a FlavorV2 in compute to populate flavorId.
+	// +kubebuilder:validation:Optional
+	FlavorIDSelector *v1.Selector `json:"flavorIdSelector,omitempty" tf:"-"`
 
 	// optional string →  The name of the desired flavor for the server. Required if flavor_id is empty. Changing this resizes the existing server.
 	// The name of the desired flavor for the server. Required if `flavor_id` is empty. Changing this resizes the existing server.

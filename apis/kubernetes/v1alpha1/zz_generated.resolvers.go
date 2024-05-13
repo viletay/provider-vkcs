@@ -7,6 +7,7 @@ package v1alpha1
 
 import (
 	"context"
+	v1alpha11 "github.com/crossplane-contrib/provider-openstack/apis/compute/v1alpha1"
 	reference "github.com/crossplane/crossplane-runtime/pkg/reference"
 	errors "github.com/pkg/errors"
 	v1alpha1 "github.com/viletay/provider-vkcs/apis/network/v1alpha1"
@@ -93,6 +94,22 @@ func (mg *NodeGroup) ResolveReferences(ctx context.Context, c client.Reader) err
 	}
 	mg.Spec.ForProvider.ClusterID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.ForProvider.ClusterIDRef = rsp.ResolvedReference
+
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.FlavorID),
+		Extract:      reference.ExternalName(),
+		Reference:    mg.Spec.ForProvider.FlavorIDRef,
+		Selector:     mg.Spec.ForProvider.FlavorIDSelector,
+		To: reference.To{
+			List:    &v1alpha11.FlavorV2List{},
+			Managed: &v1alpha11.FlavorV2{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.FlavorID")
+	}
+	mg.Spec.ForProvider.FlavorID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.FlavorIDRef = rsp.ResolvedReference
 
 	return nil
 }
