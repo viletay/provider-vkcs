@@ -72,8 +72,8 @@ func (mg *Instance) ResolveReferences(ctx context.Context, c client.Reader) erro
 			Reference:    mg.Spec.ForProvider.BlockDevice[i3].UUIDRef,
 			Selector:     mg.Spec.ForProvider.BlockDevice[i3].UUIDSelector,
 			To: reference.To{
-				List:    &v1alpha11.ImageList{},
-				Managed: &v1alpha11.Image{},
+				List:    &v1alpha11.VolumeList{},
+				Managed: &v1alpha11.Volume{},
 			},
 		})
 		if err != nil {

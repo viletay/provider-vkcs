@@ -34,6 +34,8 @@ import (
 	"github.com/viletay/provider-vkcs/internal/clients"
 	"github.com/viletay/provider-vkcs/internal/controller"
 	"github.com/viletay/provider-vkcs/internal/features"
+
+	openstack_apis "github.com/crossplane-contrib/provider-openstack/apis"
 )
 
 func main() {
@@ -81,8 +83,10 @@ func main() {
 		LeaseDuration:              func() *time.Duration { d := 60 * time.Second; return &d }(),
 		RenewDeadline:              func() *time.Duration { d := 50 * time.Second; return &d }(),
 	})
+
 	kingpin.FatalIfError(err, "Cannot create controller manager")
 	kingpin.FatalIfError(apis.AddToScheme(mgr.GetScheme()), "Cannot add vkcs APIs to scheme")
+	kingpin.FatalIfError(openstack_apis.AddToScheme(mgr.GetScheme()), "Cannot add openstack APIs to scheme")
 	featureFlags := &feature.Flags{}
 	fmt.Println(featureFlags)
 	o := tjcontroller.Options{

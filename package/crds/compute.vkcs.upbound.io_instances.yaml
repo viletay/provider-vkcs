@@ -184,7 +184,7 @@ spec:
                             to `"blank"`. Changing this creates a new server.
                           type: string
                         uuidRef:
-                          description: Reference to a Image in disk to populate uuid.
+                          description: Reference to a Volume in disk to populate uuid.
                           properties:
                             name:
                               description: Name of the referenced object.
@@ -219,7 +219,7 @@ spec:
                           - name
                           type: object
                         uuidSelector:
-                          description: Selector for a Image in disk to populate uuid.
+                          description: Selector for a Volume in disk to populate uuid.
                           properties:
                             matchControllerRef:
                               description: MatchControllerRef ensures an object with

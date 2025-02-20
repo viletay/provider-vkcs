@@ -135,15 +135,15 @@ type BlockDeviceParameters struct {
 
 	// optional string →  The UUID of the image, volume, or snapshot. Optional if source_type is set to "blank". Changing this creates a new server.
 	// The UUID of the image, volume, or snapshot. Optional if `source_type` is set to `"blank"`. Changing this creates a new server.
-	// +crossplane:generate:reference:type=github.com/viletay/provider-vkcs/apis/disk/v1alpha1.Image
+	// +crossplane:generate:reference:type=github.com/viletay/provider-vkcs/apis/disk/v1alpha1.Volume
 	// +kubebuilder:validation:Optional
 	UUID *string `json:"uuid,omitempty" tf:"uuid,omitempty"`
 
-	// Reference to a Image in disk to populate uuid.
+	// Reference to a Volume in disk to populate uuid.
 	// +kubebuilder:validation:Optional
 	UUIDRef *v1.Reference `json:"uuidRef,omitempty" tf:"-"`
 
-	// Selector for a Image in disk to populate uuid.
+	// Selector for a Volume in disk to populate uuid.
 	// +kubebuilder:validation:Optional
 	UUIDSelector *v1.Selector `json:"uuidSelector,omitempty" tf:"-"`
 

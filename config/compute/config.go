@@ -12,7 +12,7 @@ func Configure(p *ujconfig.Provider) {
 	p.AddResourceConfigurator("vkcs_compute_instance", func(r *ujconfig.Resource) {
 		r.ExternalName = ujconfig.IdentifierFromProvider
 		r.References["block_device.uuid"] = ujconfig.Reference{
-			Type: "github.com/viletay/provider-vkcs/apis/disk/v1alpha1.Image",
+			Type: "github.com/viletay/provider-vkcs/apis/disk/v1alpha1.Volume",
 		}
 		r.References["image_id"] = ujconfig.Reference{
 			Type: "github.com/viletay/provider-vkcs/apis/disk/v1alpha1.Image",
